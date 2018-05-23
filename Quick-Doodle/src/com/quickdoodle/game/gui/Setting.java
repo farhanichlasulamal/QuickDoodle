@@ -24,7 +24,7 @@ public class Setting extends JPanel {
 	 */
 	public Setting() {
 		setBackground(new java.awt.Color(0, 80, 115));
-		setBounds(470, 0, 210, 430);
+		setBounds(470, 30, 210, 430);
 		setVisible(false);
 		
 		JLabel lblClose = new JLabel("");
@@ -44,12 +44,12 @@ public class Setting extends JPanel {
 		JCheckBox shareDataCheck = new JCheckBox("Share Data Check");
 		shareDataCheck.setFont(new Font("Tw Cen MT", Font.PLAIN, 12));
 		shareDataCheck.setForeground(Color.WHITE);
-		shareDataCheck.setBackground(new java.awt.Color(0, 80, 115));
+		shareDataCheck.setBackground(new Color(0, 80, 115));
 		shareDataCheck.setBounds(31, 120, 129, 23);
 		add(shareDataCheck);
 		
 		JPanel saveButtonPanel = new JPanel();
-		saveButtonPanel.setBackground(new java.awt.Color(111, 190, 75));
+		saveButtonPanel.setBackground(new Color(111, 190, 75));
 		saveButtonPanel.setBounds(31, 162, 90, 28);
 		add(saveButtonPanel);
 		saveButtonPanel.setLayout(null);
@@ -64,7 +64,7 @@ public class Setting extends JPanel {
 		JLabel lblSetting = new JLabel("Setting");
 		lblSetting.setHorizontalAlignment(SwingConstants.LEFT);
 		lblSetting.setFont(new Font("Tw Cen MT", Font.PLAIN, 34));
-		lblSetting.setForeground(new java.awt.Color(1,187, 234));
+		lblSetting.setForeground(new Color(1,187, 234));
 		lblSetting.setBounds(31, 67, 100, 35);
 		add(lblSetting);
 	}

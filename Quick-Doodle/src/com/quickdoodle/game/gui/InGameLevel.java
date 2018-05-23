@@ -27,7 +27,7 @@ public class InGameLevel extends JPanel {
 	 */
 	public InGameLevel() {
 		setBackground(Color.BLUE);
-		setBounds(0, 0, 680, 430);
+		setBounds(0, 30, 680, 430);
 		setLayout(null);
 		setVisible(false);
 		
@@ -49,18 +49,6 @@ public class InGameLevel extends JPanel {
 		});
 		lblBack.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblBack.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		JLabel lblExitButton = new JLabel("");
-		lblExitButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent arg0) {
-				System.exit(0);
-			}
-		});
-		lblExitButton.setIcon(new ImageIcon("./img/ExitButton.png"));
-		lblExitButton.setHorizontalAlignment(SwingConstants.CENTER);
-		lblExitButton.setBounds(10, 399, 20, 20);
-		leftPanel.add(lblExitButton);
 		
 		JPanel centerPanel = new JPanel();
 		centerPanel.setBackground(new java.awt.Color(111, 190, 75));
@@ -113,13 +101,13 @@ public class InGameLevel extends JPanel {
 		checkButtonPanel.add(lblCheck);
 		
 		JPanel rightPanel = new JPanel();
-		rightPanel.setBackground(new java.awt.Color(0, 80, 115));
+		rightPanel.setBackground(new Color(0, 80, 115));
 		rightPanel.setBounds(437, 0, 243, 430);
 		add(rightPanel);
 		rightPanel.setLayout(null);
 		
 		JLabel lblTime = new JLabel("Time");
-		lblTime.setForeground(new java.awt.Color(1, 187, 234));
+		lblTime.setForeground(new Color(1, 187, 234));
 		lblTime.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		lblTime.setHorizontalAlignment(SwingConstants.LEFT);
 		lblTime.setBounds(29, 70, 46, 28);
@@ -127,21 +115,21 @@ public class InGameLevel extends JPanel {
 		
 		JLabel lblTarget = new JLabel("Target");
 		lblTarget.setHorizontalAlignment(SwingConstants.LEFT);
-		lblTarget.setForeground(new java.awt.Color(1, 187, 234));
+		lblTarget.setForeground(new Color(1, 187, 234));
 		lblTarget.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		lblTarget.setBounds(29, 98, 46, 28);
 		rightPanel.add(lblTarget);
 		
 		JLabel lblPredict = new JLabel("Predict");
 		lblPredict.setHorizontalAlignment(SwingConstants.LEFT);
-		lblPredict.setForeground(new java.awt.Color(1, 187, 234));
+		lblPredict.setForeground(new Color(1, 187, 234));
 		lblPredict.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		lblPredict.setBounds(29, 126, 46, 28);
 		rightPanel.add(lblPredict);
 		
 		JLabel lblLevel = new JLabel("Level");
 		lblLevel.setHorizontalAlignment(SwingConstants.LEFT);
-		lblLevel.setForeground(new java.awt.Color(1, 187, 234));
+		lblLevel.setForeground(new Color(1, 187, 234));
 		lblLevel.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		lblLevel.setBounds(29, 154, 46, 28);
 		rightPanel.add(lblLevel);

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-cdense-0.33.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-cdense-0.33-sources.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-core-0.33.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-core-0.33-sources.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-ddense-0.33.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-ddense-0.33-sources.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-dsparse-0.33.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-dsparse-0.33-sources.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-experimental-0.33.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-experimental-0.33-sources.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-fdense-0.33.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-fdense-0.33-sources.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-simple-0.33.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-simple-0.33-sources.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-zdense-0.33.jar"/>
+	<classpathentry kind="lib" path="D:/My Java/Guess-The-Doodle/dependencies/ejml-zdense-0.33-sources.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

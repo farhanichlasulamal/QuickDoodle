@@ -1,1 +1,1 @@
-# Guess-The-Doodle
+# Quick-Doodle

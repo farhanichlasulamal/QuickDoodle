@@ -1,26 +1,28 @@
 package com.quickdoodle.game.gui;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
-import java.awt.Graphics2D;
-import java.awt.Image;
 
-import javax.swing.JComponent;
-import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.border.EmptyBorder;
 
 import javax.swing.JLabel;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Timer;
+import java.util.TimerTask;
+
 import javax.swing.SwingConstants;
 import java.awt.Font;
 import javax.swing.ImageIcon;
-import java.awt.Canvas;
 
 public class InGameLevel extends JPanel {
 	DrawArea drawArea;
+	Timer timer;
+	public JPanel resultPanel;
+	JLabel currentTime;
+	JLabel currentTarget;
+	JLabel currentPredict;
+	JLabel currentLevel;
+	private boolean inGameStatus;
 	
 	/**
 	 * Create the panel.
@@ -29,7 +31,66 @@ public class InGameLevel extends JPanel {
 		setBackground(Color.BLUE);
 		setBounds(0, 30, 680, 430);
 		setLayout(null);
-		setVisible(false);
+		
+		resultPanel = new JPanel();
+		resultPanel.setBackground(new Color(0, 80, 115));
+		resultPanel.setBounds(0, 0, 680, 430);
+		add(resultPanel);
+		resultPanel.setLayout(null);
+		resultPanel.setVisible(false);
+		
+		JLabel lblTextScore = new JLabel("YOUR SCORE");
+		lblTextScore.setForeground(Color.WHITE);
+		lblTextScore.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTextScore.setFont(new Font("Tw Cen MT", Font.BOLD, 40));
+		lblTextScore.setBounds(224, 98, 232, 68);
+		resultPanel.add(lblTextScore);
+		
+		JLabel lblScore = new JLabel("40");
+		lblScore.setHorizontalAlignment(SwingConstants.CENTER);
+		lblScore.setForeground(new Color(1, 187, 234));
+		lblScore.setFont(new Font("Tw Cen MT", Font.BOLD, 50));
+		lblScore.setBounds(224, 177, 232, 68);
+		resultPanel.add(lblScore);
+		
+		JPanel menuButtonPanel = new JPanel();
+		menuButtonPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				resultPanel.setVisible(false);
+				close();
+			}
+		});
+		menuButtonPanel.setBackground(new Color(111, 190, 75));
+		menuButtonPanel.setBounds(224, 266, 90, 28);
+		resultPanel.add(menuButtonPanel);
+		menuButtonPanel.setLayout(null);
+		
+		JLabel lblMenu = new JLabel("Menu");
+		lblMenu.setForeground(Color.WHITE);
+		lblMenu.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMenu.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
+		lblMenu.setBounds(0, 0, 90, 28);
+		menuButtonPanel.add(lblMenu);
+		
+		JPanel playAgainButtonPanel = new JPanel();
+		playAgainButtonPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				resultPanel.setVisible(false);
+			}
+		});
+		playAgainButtonPanel.setBounds(366, 266, 90, 28);
+		resultPanel.add(playAgainButtonPanel);
+		playAgainButtonPanel.setLayout(null);
+		playAgainButtonPanel.setBackground(new Color(111, 190, 75));
+		
+		JLabel lblPlayAgain = new JLabel("Play Again");
+		lblPlayAgain.setBounds(0, 0, 90, 28);
+		playAgainButtonPanel.add(lblPlayAgain);
+		lblPlayAgain.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPlayAgain.setForeground(Color.WHITE);
+		lblPlayAgain.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		
 		JPanel leftPanel = new JPanel();
 		leftPanel.setBackground(Color.WHITE);
@@ -51,7 +112,7 @@ public class InGameLevel extends JPanel {
 		lblBack.setHorizontalAlignment(SwingConstants.CENTER);
 		
 		JPanel centerPanel = new JPanel();
-		centerPanel.setBackground(new java.awt.Color(111, 190, 75));
+		centerPanel.setBackground(new Color(111, 190, 75));
 		centerPanel.setBounds(62, 0, 375, 430);
 		add(centerPanel);
 		centerPanel.setLayout(null);
@@ -162,28 +223,28 @@ public class InGameLevel extends JPanel {
 		colonLevel.setBounds(85, 154, 10, 28);
 		rightPanel.add(colonLevel);
 		
-		JLabel currentTime = new JLabel("28");
+		currentTime = new JLabel("5");
 		currentTime.setHorizontalAlignment(SwingConstants.LEFT);
 		currentTime.setForeground(Color.WHITE);
 		currentTime.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		currentTime.setBounds(103, 70, 100, 28);
 		rightPanel.add(currentTime);
 		
-		JLabel currentTarget = new JLabel("UMBRELLA");
+		currentTarget = new JLabel("UMBRELLA");
 		currentTarget.setHorizontalAlignment(SwingConstants.LEFT);
 		currentTarget.setForeground(Color.WHITE);
 		currentTarget.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		currentTarget.setBounds(105, 98, 98, 28);
 		rightPanel.add(currentTarget);
 		
-		JLabel currentPredict = new JLabel("CLOUD");
+		currentPredict = new JLabel("CLOUD");
 		currentPredict.setHorizontalAlignment(SwingConstants.LEFT);
 		currentPredict.setForeground(Color.WHITE);
 		currentPredict.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		currentPredict.setBounds(105, 126, 98, 28);
 		rightPanel.add(currentPredict);
 		
-		JLabel currentLevel = new JLabel("2");
+		currentLevel = new JLabel("1");
 		currentLevel.setHorizontalAlignment(SwingConstants.LEFT);
 		currentLevel.setForeground(Color.WHITE);
 		currentLevel.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
@@ -199,5 +260,62 @@ public class InGameLevel extends JPanel {
 	
 	public void close(){
 		setVisible(false);
+//		timer.cancel();
 	}
+
+	public void showTimer() {
+//		timer = new Timer();
+//      timer.schedule(new countDown(), 0, 1000);
+	}
+	
+	public void showPrediction() {}
+	
+	public void showTarget() {}
+	
+	public void showLevel() {}
+	
+	public boolean getInGameStatus() {
+		return inGameStatus;
+	}
+	
+	public void setInGameStatus(boolean status) {
+		inGameStatus = status;
+	}
+	
+	public void play() {
+		while(true) {
+			playLevel();
+			resultPanel.setVisible(true);
+		}
+	}
+	
+	public void playLevel() {
+			timer = new Timer();
+			timer.schedule(new countDown(), 0, 1000);
+	}
+	
+	class countDown extends TimerTask {
+        int sec = Integer.parseInt(currentTime.getText());
+        int level = Integer.parseInt(currentLevel.getText());
+        
+        public void run() {
+        	currentLevel.setText(String.valueOf(level));
+        	
+        	if (sec > 0) {
+            	currentTime.setText(String.valueOf(sec));
+                sec--;
+            } else {
+            	currentTime.setText("0");
+            	if(level<5) {
+            		level++;
+            		sec = 5;
+            	} else {
+            		cancel();
+            		resultPanel.setVisible(true);
+            	}
+            }
+        }
+    }
+	
+	public void updatePixelValue() {}
 }

@@ -72,4 +72,8 @@ public class Setting extends JPanel {
 	public void close(){
 		setVisible(false);
 	}
+
+	public void showModelDataBaseInfo() {}
+	
+	public void saveConfig() {}
 }

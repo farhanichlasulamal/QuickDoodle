@@ -22,6 +22,8 @@ import javax.swing.JButton;
 
 public class StartMenu extends JFrame {
 	static Point compCoords;
+	JPanel contentPane;
+	JPanel mainPanel;
 	
 	/**
 	 * Launch the application.
@@ -45,7 +47,7 @@ public class StartMenu extends JFrame {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    setUndecorated(true);
 		setBounds(0, 0, 680, 460);
-		JPanel contentPane = new JPanel();
+		contentPane = new JPanel();
 		contentPane.setBounds(0, 0, 680, 430);
 		contentPane.setBackground(Color.BLACK);
 		contentPane.setForeground(Color.BLACK);
@@ -53,8 +55,6 @@ public class StartMenu extends JFrame {
 		setContentPane(contentPane);
 		contentPane.setLayout(null);
 		this.setLocationRelativeTo(null);
-		
-		Setting setting = new Setting();
 		
 		JPanel topPanel = new JPanel();
 		topPanel.addMouseMotionListener(new MouseMotionAdapter() {
@@ -104,12 +104,14 @@ public class StartMenu extends JFrame {
 		});
 		exitWindowButton.setIcon(new ImageIcon("./img/closeWindowButton.png"));
 		exitWindowButton.setHorizontalAlignment(SwingConstants.CENTER);
-		InGameLevel game = new InGameLevel();
 		
-		contentPane.add(game);
-		contentPane.add(setting);
+//		Setting setting = new Setting();
+//		InGameLevel game = new InGameLevel();
+//		
+//		contentPane.add(game);
+//		contentPane.add(setting);
 		
-		JPanel mainPanel = new JPanel();
+		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.WHITE);
 		mainPanel.setBounds(0, 30, 680, 430);
 		mainPanel.setLayout(null);
@@ -138,8 +140,10 @@ public class StartMenu extends JFrame {
 		playButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				game.setVisible(true);
-				setting.setVisible(false);
+//				game.setVisible(true);
+//				game.play();
+//				setting.setVisible(false);
+				play();
 			}
 		});
 		playButtonPanel.setBackground(new Color(0, 80, 115));
@@ -160,8 +164,9 @@ public class StartMenu extends JFrame {
 		lblSettingButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				setting.setVisible(true);
-				game.setVisible(false);
+//				setting.setVisible(true);
+//				game.setVisible(false);
+				setting();
 			}
 		});
 		lblSettingButton.setIcon(new ImageIcon("./img/SettingButton.png"));
@@ -178,5 +183,17 @@ public class StartMenu extends JFrame {
 		mainPanel.add(logo);
 		logo.setIcon(new ImageIcon("./img/Logo.png"));
 		logo.setHorizontalAlignment(SwingConstants.CENTER);
+	}
+
+	public void play() {
+		InGameLevel game = new InGameLevel();
+		contentPane.add(game);
+		mainPanel.setVisible(false);
+		game.play();
+		
+	}
+	
+	public void setting() {
+		
 	}
 }

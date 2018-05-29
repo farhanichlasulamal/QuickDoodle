@@ -24,23 +24,11 @@ public class StartMenu extends JFrame {
 	static Point compCoords;
 	JPanel contentPane;
 	JPanel mainPanel;
+	JPanel resultPanel;
 	
 	/**
 	 * Launch the application.
 	 */
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					StartMenu frame = new StartMenu();
-					frame.setVisible(true);
-					frame.setResizable(false);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
 	
 	public StartMenu() {
 		setTitle("Quick Doodle Game");
@@ -64,6 +52,7 @@ public class StartMenu extends JFrame {
                 setLocation(currCoords.x - compCoords.x, currCoords.y - compCoords.y);
 			}
 		});
+		
 		topPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
@@ -111,6 +100,67 @@ public class StartMenu extends JFrame {
 //		contentPane.add(game);
 //		contentPane.add(setting);
 		
+		resultPanel = new JPanel();
+		resultPanel.setBackground(new Color(0, 80, 115));
+		resultPanel.setBounds(0, 30, 680, 430);
+		contentPane.add(resultPanel);
+		resultPanel.setLayout(null);
+		resultPanel.setVisible(false);
+		
+		JLabel lblTextScore = new JLabel("YOUR SCORE");
+		lblTextScore.setForeground(Color.WHITE);
+		lblTextScore.setHorizontalAlignment(SwingConstants.CENTER);
+		lblTextScore.setFont(new Font("Tw Cen MT", Font.BOLD, 40));
+		lblTextScore.setBounds(224, 98, 232, 68);
+		resultPanel.add(lblTextScore);
+		
+		JLabel lblScore = new JLabel("40");
+		lblScore.setHorizontalAlignment(SwingConstants.CENTER);
+		lblScore.setForeground(new Color(1, 187, 234));
+		lblScore.setFont(new Font("Tw Cen MT", Font.BOLD, 50));
+		lblScore.setBounds(224, 177, 232, 68);
+		resultPanel.add(lblScore);
+		
+		JPanel menuButtonPanel = new JPanel();
+		menuButtonPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				resultPanel.setVisible(false);
+				mainPanel.setVisible(true);
+			}
+		});
+		menuButtonPanel.setBackground(new Color(111, 190, 75));
+		menuButtonPanel.setBounds(224, 266, 90, 28);
+		resultPanel.add(menuButtonPanel);
+		menuButtonPanel.setLayout(null);
+		
+		JLabel lblMenu = new JLabel("Menu");
+		lblMenu.setForeground(Color.WHITE);
+		lblMenu.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMenu.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
+		lblMenu.setBounds(0, 0, 90, 28);
+		menuButtonPanel.add(lblMenu);
+		
+		JPanel playAgainButtonPanel = new JPanel();
+		playAgainButtonPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				play();
+				System.out.println("X");
+			}
+		});
+		playAgainButtonPanel.setBounds(366, 266, 90, 28);
+		resultPanel.add(playAgainButtonPanel);
+		playAgainButtonPanel.setLayout(null);
+		playAgainButtonPanel.setBackground(new Color(111, 190, 75));
+		
+		JLabel lblPlayAgain = new JLabel("Play Again");
+		lblPlayAgain.setBounds(0, 0, 90, 28);
+		playAgainButtonPanel.add(lblPlayAgain);
+		lblPlayAgain.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPlayAgain.setForeground(Color.WHITE);
+		lblPlayAgain.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
+		
 		mainPanel = new JPanel();
 		mainPanel.setBackground(Color.WHITE);
 		mainPanel.setBounds(0, 30, 680, 430);
@@ -140,9 +190,6 @@ public class StartMenu extends JFrame {
 		playButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-//				game.setVisible(true);
-//				game.play();
-//				setting.setVisible(false);
 				play();
 			}
 		});
@@ -164,8 +211,6 @@ public class StartMenu extends JFrame {
 		lblSettingButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-//				setting.setVisible(true);
-//				game.setVisible(false);
 				setting();
 			}
 		});
@@ -191,6 +236,7 @@ public class StartMenu extends JFrame {
 		mainPanel.setVisible(false);
 		game.play();
 		
+		System.out.println(game.finished);
 	}
 	
 	public void setting() {

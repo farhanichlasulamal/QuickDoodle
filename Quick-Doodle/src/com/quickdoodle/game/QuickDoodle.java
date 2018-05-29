@@ -1,9 +1,12 @@
 package com.quickdoodle.game;
 
+import java.awt.EventQueue;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Timer;
 
+import com.quickdoodle.game.gui.StartMenu;
 import com.quickdoodle.model.Model;
 import com.quickdoodle.trainer.datahandler.Doodle;
 
@@ -40,4 +43,19 @@ public class QuickDoodle {
 	public void updateLevelStatus() {}
 	
 	public void countDown() {}
+	
+	public static void main(String[] args) {
+		StartMenu frame = new StartMenu();
+		EventQueue.invokeLater(new Runnable() {
+			public void run() {
+				try {
+					frame.setVisible(true);
+					frame.setResizable(false);
+					
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+		});
+	}
 }

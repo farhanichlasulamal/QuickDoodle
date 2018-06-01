@@ -29,6 +29,20 @@ public class StartMenu extends JFrame {
 	/**
 	 * Launch the application.
 	 */
+//	public static void main(String[] args) {
+//			EventQueue.invokeLater(new Runnable() {
+//				public void run() {
+//					try {
+//						StartMenu frame = new StartMenu();
+//						frame.setVisible(true);
+//						frame.setResizable(false);
+//					} catch (Exception e) {
+//						e.printStackTrace();
+//					}
+//				}
+//			});
+//	}
+//	
 	
 	public StartMenu() {
 		setTitle("Quick Doodle Game");

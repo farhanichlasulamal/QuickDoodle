@@ -19,6 +19,7 @@ import javax.swing.border.EmptyBorder;
 
 public class GameGUI extends JFrame {
 	static Point compCoords;
+	static Point compCoords2;
 	JLabel currentTime;
 	JLabel currentTarget;
 	JLabel currentPredict;
@@ -131,7 +132,56 @@ public class GameGUI extends JFrame {
 		mainPanel.setBounds(0, 30, 680, 430);
 		mainPanel.setLayout(null);
 		startMenu.add(mainPanel);
+
+		//Panel Setting
+		JPanel setting = new JPanel();
+		setting.setBackground(new java.awt.Color(0, 80, 115));
+		setting.setBounds(470, 0, 210, 430);
+		setting.setVisible(false);
+		mainPanel.add(setting);
+		setting.setLayout(null);
 		
+		JLabel lblClose = new JLabel("");
+		lblClose.setIcon(new ImageIcon("./img/CloseSettingButton.png"));
+		lblClose.setBounds(169, 21, 20, 20);
+		lblClose.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				setting.setVisible(false);
+			}
+		});
+		lblClose.setHorizontalAlignment(SwingConstants.CENTER);
+		setting.add(lblClose);
+		
+		JCheckBox shareDataCheck = new JCheckBox("Share Data Check");
+		shareDataCheck.setFont(new Font("Tw Cen MT", Font.PLAIN, 12));
+		shareDataCheck.setForeground(Color.WHITE);
+		shareDataCheck.setBackground(new Color(0, 80, 115));
+		shareDataCheck.setBounds(31, 120, 129, 23);
+		setting.add(shareDataCheck);
+		
+		JPanel saveButtonPanel = new JPanel();
+		saveButtonPanel.setBackground(new Color(111, 190, 75));
+		saveButtonPanel.setBounds(31, 162, 90, 28);
+		setting.add(saveButtonPanel);
+		saveButtonPanel.setLayout(null);
+		
+		JLabel lblSave = new JLabel("Save");
+		lblSave.setBounds(0, 0, 90, 28);
+		saveButtonPanel.add(lblSave);
+		lblSave.setForeground(Color.WHITE);
+		lblSave.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
+		lblSave.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JLabel lblSetting = new JLabel("Setting");
+		lblSetting.setHorizontalAlignment(SwingConstants.LEFT);
+		lblSetting.setFont(new Font("Tw Cen MT", Font.PLAIN, 34));
+		lblSetting.setForeground(new java.awt.Color(1,187, 234));
+		lblSetting.setBounds(31, 67, 100, 35);
+		setting.add(lblSetting);
+		
+		
+		//panel buttom
 		JPanel buttomPanel = new JPanel();
 		buttomPanel.setBounds(0, 245, 680, 185);
 		mainPanel.add(buttomPanel);
@@ -139,6 +189,12 @@ public class GameGUI extends JFrame {
 		buttomPanel.setLayout(null);
 		
 		JPanel howToButtonPanel = new JPanel();
+		howToButtonPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				HowTo();
+			}
+		});
 		howToButtonPanel.setLayout(null);
 		howToButtonPanel.setBackground(new Color(0, 80, 115));
 		howToButtonPanel.setBounds(375, 20, 90, 28);
@@ -177,11 +233,13 @@ public class GameGUI extends JFrame {
 		lblSettingButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//SETTING
+				setting.setVisible(true);
 			}
+			
 		});
 		lblSettingButton.setIcon(new ImageIcon("./img/SettingButton.png"));
 		lblSettingButton.setHorizontalAlignment(SwingConstants.CENTER);
+		
 		
 		JLabel label = new JLabel("\u00A92018");
 		label.setFont(new Font("Tw Cen MT", Font.PLAIN, 12));
@@ -467,6 +525,73 @@ public class GameGUI extends JFrame {
 		lblPlayAgain.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 	}
 
+	public void HowTo() {
+		JFrame frame2 = new JFrame("How To Play");
+		frame2.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		frame2.setUndecorated(true);
+		frame2.setBounds(0, 0, 348, 503);
+		frame2.setVisible(true);
+		frame2.setLocationRelativeTo(null);
+	    
+		JPanel contentPane = new JPanel();
+		contentPane.setBounds(0, 0, 348, 503);
+		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
+		contentPane.setBackground(new Color(0, 80, 115));
+		contentPane.setLayout(null);
+		frame2.setContentPane(contentPane);
+		
+		//add Top Panel
+		JPanel topPanel = new JPanel();
+		contentPane.add(topPanel);
+		topPanel.addMouseMotionListener(new MouseMotionAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				Point currCoords = e.getLocationOnScreen();
+                frame2.setLocation(currCoords.x - compCoords2.x, currCoords.y - compCoords2.y);
+			}
+		});
+		
+		topPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				compCoords2 = e.getPoint();
+			}
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				compCoords2 = null;
+			}
+		});
+		topPanel.setBackground(new Color(0, 80, 115));
+		topPanel.setBounds(0, 0, 348, 31);
+		topPanel.setLayout(null);
+		
+		JLabel exitWindowButton = new JLabel("");
+		exitWindowButton.setBounds(308, 0, 40, 30);
+		topPanel.add(exitWindowButton);
+		exitWindowButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				frame2.dispose();
+			}
+		});
+		exitWindowButton.setIcon(new ImageIcon("./img/closeWindowButton.png"));
+		exitWindowButton.setHorizontalAlignment(SwingConstants.CENTER);
+		
+
+		JPanel main = new JPanel();
+		main.setBounds(0, 30, 348, 473);
+		main.setBorder(new EmptyBorder(5, 5, 5, 5));
+		main.setLayout(null);
+		contentPane.add(main);
+		
+		JLabel image = new JLabel("");
+		image.setIcon(new ImageIcon("./img/HowTo.png"));
+		image.setBounds(0, 0, 348, 473);
+		image.setHorizontalAlignment(SwingConstants.CENTER);
+		main.add(image);
+	}
+	
+	
 	private Integer[] prepareLevel() {
 		Set<Integer> levels = new HashSet<>();
 		while(levels.size() <= 5) {

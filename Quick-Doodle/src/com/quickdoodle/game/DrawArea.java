@@ -10,9 +10,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
 
-import javax.imageio.ImageIO;
 import javax.swing.JComponent;
 
 import com.quickdoodle.model.Model;
@@ -25,13 +23,16 @@ public class DrawArea extends JComponent {
 	private Graphics2D g2d;
 	// Mouse coordinates
 	private int currentX, currentY, oldX, oldY;
-	
-	
-	
+
+	private Model model;
+	private double[] result;
+
 	private int width, height;
 	private int[][] array;
+	public int currentPredict = -1;
 
 	public DrawArea() {
+		model = new Model();
 		setDoubleBuffered(false);
 		addMouseListener(new MouseAdapter() {
 			public void mousePressed(MouseEvent e) {
@@ -59,13 +60,38 @@ public class DrawArea extends JComponent {
 					oldY = currentY;
 				}
 			}
-			
-			public void mouseReleased(MouseEvent e) {
-				Model m = Model.getInstance();
-				double[] input = imageToInput(img);
-				double[] result = m.guess(input);
-			}
 		});
+
+		addMouseListener(new MouseAdapter() {
+			public void mouseReleased(MouseEvent e) {
+				double[] input = imageToInput(img);
+				Thread precictor = new Thread(new Runnable() {
+					@Override
+					public void run() {						
+						result = model.guess(input);
+					}					
+				});
+				try {
+					precictor.start();
+					precictor.join();
+				} catch (InterruptedException e1) {
+					e1.printStackTrace();
+				}
+				currentPredict = getMaxValueIndex(result);
+			}
+
+		});
+
+	}
+
+	private int getMaxValueIndex(double[] guessResult) {
+		int awnser = 0;
+		System.out.println();
+		for (int i = 1; i < guessResult.length; i++) {
+			if (guessResult[i] > guessResult[awnser])
+				awnser = i;
+		}
+		return awnser;
 	}
 
 	protected void paintComponent(Graphics g) {
@@ -88,16 +114,16 @@ public class DrawArea extends JComponent {
 	private BufferedImage resize(BufferedImage img, int newW, int newH) {
 		Image tmp = img.getScaledInstance(newW, newH, Image.SCALE_SMOOTH);
 		BufferedImage dimg = new BufferedImage(newW, newH, BufferedImage.TYPE_INT_ARGB);
-
 		Graphics2D g2d = dimg.createGraphics();
 		g2d.drawImage(tmp, 0, 0, null);
 		g2d.dispose();
-
 		return dimg;
 	}
-	
+
 	public double[] imageToInput(BufferedImage image) {
-		double[] result = new double[784];
+		double[] result = new double[28 * 28];
+		width = 28;
+		height = 28;
 		BufferedImage scaled = resize(img, width, height);
 		for (int y = 0; y < height; y++) {
 			for (int x = 0; x < width; x++) {
@@ -112,7 +138,7 @@ public class DrawArea extends JComponent {
 		}
 		return result;
 	}
-	
+
 	public void print() {
 		width = 28;
 		height = 28;
@@ -146,5 +172,6 @@ public class DrawArea extends JComponent {
 		g2d.fillRect(0, 0, getSize().width, getSize().height);
 		g2d.setPaint(Color.black);
 		repaint();
+		currentPredict = -1;
 	}
 }

@@ -6,6 +6,9 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -22,9 +25,25 @@ public class GameGUI extends JFrame {
 	JLabel currentLevel;
 	DrawArea drawArea;
 	boolean finished;
-
+	
+	private static HashMap<Integer, String> doodles = new HashMap<>();
+	
+	private void prepareDoodles() {
+		doodles.put(-1, "None");
+		doodles.put(0, "bat");
+		doodles.put(1, "cat");
+		doodles.put(2, "circle");
+		doodles.put(3, "diamond");
+		doodles.put(4, "fish");
+		doodles.put(5, "flower");
+		doodles.put(6, "line");
+		doodles.put(7, "nail");
+		doodles.put(8, "star");
+		doodles.put(9, "zigzag");
+	}
 	
 	public GameGUI() {
+		prepareDoodles();
 		addFrame();
 		StartMenu();
 		//ResultPanel();
@@ -405,30 +424,34 @@ public class GameGUI extends JFrame {
 		lblScore.setBounds(224, 177, 232, 68);
 		mainPanel.add(lblScore);
 		
+		//tombol back to menu
 		JPanel menuButtonPanel = new JPanel();
 		menuButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				//BACK TO MENU
+				StartMenu();
 			}
 		});
-		menuButtonPanel.setBackground(new Color(111, 190, 75));
 		menuButtonPanel.setBounds(224, 266, 90, 28);
 		mainPanel.add(menuButtonPanel);
 		menuButtonPanel.setLayout(null);
+		menuButtonPanel.setBackground(new Color(111, 190, 75));
 		
 		JLabel lblMenu = new JLabel("Menu");
-		lblMenu.setForeground(Color.WHITE);
-		lblMenu.setHorizontalAlignment(SwingConstants.CENTER);
-		lblMenu.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		lblMenu.setBounds(0, 0, 90, 28);
 		menuButtonPanel.add(lblMenu);
+		lblMenu.setHorizontalAlignment(SwingConstants.CENTER);
+		lblMenu.setForeground(Color.WHITE);
+		lblMenu.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
+
 		
+		//tombol play again
 		JPanel playAgainButtonPanel = new JPanel();
 		playAgainButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//PLAY AGAIN
+				InGameLevel();
+				play();
 			}
 		});
 		playAgainButtonPanel.setBounds(366, 266, 90, 28);
@@ -444,9 +467,17 @@ public class GameGUI extends JFrame {
 		lblPlayAgain.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 	}
 
+	private Integer[] prepareLevel() {
+		Set<Integer> levels = new HashSet<>();
+		while(levels.size() <= 5) {
+			levels.add((int) (Math.random() * (doodles.size() - 1)));
+		}
+		return levels.stream().toArray(Integer[]::new);
+	}
+	
 	public void play() {
+		Integer[] levels = prepareLevel();
 		finished = false;	
-		String[] levels = {"A", "B", "C", "D", "E"};
 		Thread level = new Thread(new Runnable() {
 			@Override
 			public void run() {
@@ -460,7 +491,7 @@ public class GameGUI extends JFrame {
 				double unprocessedTime = 0;
 				for (int i = 0; i < 5; i++) {
 					currentLevel.setText(String.valueOf(i + 1));
-					currentTarget.setText(levels[i]);
+					currentTarget.setText(doodles.get(levels[i]));
 					System.out.println(i);
 					while (timer <= MAX_TIME) {
 						boolean update = false;
@@ -469,7 +500,6 @@ public class GameGUI extends JFrame {
 						lastTime = startTime;
 						unprocessedTime += passedTime / (double) 1000000000L;
 						frameCounter += passedTime;
-
 						while (unprocessedTime > frameTime) {
 							unprocessedTime -= frameTime;
 							update = true;
@@ -477,9 +507,8 @@ public class GameGUI extends JFrame {
 								frameCounter = 0;
 								currentTime.setText(String.valueOf(MAX_TIME - timer++));
 							}
-							if (update) {
-								
-								//Ibarat fungsi draw diprocessing, semua operasi disini
+							if (update) {	
+								currentPredict.setText(doodles.get(drawArea.currentPredict));
 							} else {
 								try {
 									Thread.sleep(1);
@@ -489,6 +518,7 @@ public class GameGUI extends JFrame {
 							}
 						}
 					}
+					drawArea.clear();
 					timer = -1;
 				}
 				ResultPanel();

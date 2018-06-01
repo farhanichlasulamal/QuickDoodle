@@ -11,6 +11,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;

@@ -249,7 +249,6 @@ public class StartMenu extends JFrame {
 		contentPane.add(game);
 		mainPanel.setVisible(false);
 		game.play();
-		
 		System.out.println(game.finished);
 	}
 	

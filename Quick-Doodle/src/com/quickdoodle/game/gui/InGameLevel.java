@@ -215,54 +215,56 @@ public class InGameLevel extends JPanel {
 	}
 
 	public void play() {
-		finished = false;
-		playLevel();
-		System.out.println(finished);
-	}
+		String[] levels = {"A", "B", "C", "D", "E"};
+		Thread thread = new Thread() {
+			public void run() {
+				final double frameTime = 1.0 / 60.0;
+				long frameCounter = 0;
 
-	public void playLevel() {
-		final double frameTime = 1.0 / 60.0;
-		long frameCounter = 0;
-		
-		int MAX_TIME = 1;
-		int timer = 0;
-		
-		long lastTime = System.nanoTime();
-		double unprocessedTime = 0;
-		for (int i = 0; i < 5; i++) {
-			currentLevel.setText(String.valueOf(i + 1));
-			System.out.println(i);
-			while (timer < MAX_TIME) {
-				boolean update = false;
-				long startTime = System.nanoTime();
-				long passedTime = startTime - lastTime;
-				lastTime = startTime;
-				unprocessedTime += passedTime / (double) 1000000000L;
-				frameCounter += passedTime;
+				int MAX_TIME = 5;
+				int timer = 0;
 
-				while (unprocessedTime > frameTime) {
-					unprocessedTime -= frameTime;
+				long lastTime = System.nanoTime();
+				double unprocessedTime = 0;
+				for (int i = 0; i < 5; i++) {
+					currentLevel.setText(String.valueOf(i + 1));
+					currentTarget.setText(levels[i]);
+					System.out.println(i);
+					while (timer <= MAX_TIME) {
+						boolean update = false;
+						long startTime = System.nanoTime();
+						long passedTime = startTime - lastTime;
+						lastTime = startTime;
+						unprocessedTime += passedTime / (double) 1000000000L;
+						frameCounter += passedTime;
 
-					if (frameCounter >= 1000000000L) {
-						frameCounter = 0;
-						timer++;
-					}
-					if (update) {
-						//Ibarat fungsi draw diprocessing, semua operasi disini
-					} else {
-						try {
-							Thread.sleep(1);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
+						while (unprocessedTime > frameTime) {
+							unprocessedTime -= frameTime;
+							if (frameCounter >= 1000000000L) {
+								frameCounter = 0;
+								currentTime.setText(String.valueOf(MAX_TIME - timer));
+								timer++;
+							}
+							if (update) {
+								// Ibarat fungsi draw diprocessing, semua operasi disini
+							} else {
+								try {
+									Thread.sleep(1);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
 						}
 					}
+					timer = 0;
 				}
+				close();
 			}
-			timer = 0;
-		}
+			
+		};
+		thread.start();
+		
 	}
-
-	
 
 	public void updatePixelValue() {
 	}

@@ -1,5 +1,10 @@
 package com.quickdoodle.model;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import org.ejml.simple.SimpleMatrix;
@@ -15,102 +20,133 @@ public class Model {
 	protected int inputNodes;
 	protected int hiddenLayers;
 	protected int outputNodes;
-	
+
 	protected int[] hiddenLayerNodes;
-	
+
 	protected ActivationFunction hiddenLayerActivation;
 	protected ActivationFunction outputLayerActivation;
 
 	protected SimpleMatrix[] weights;
-	protected SimpleMatrix[] biases;
+	public SimpleMatrix[] biases;
 	
-	protected Model() {}
-	
-	public Model(String text) {
-		loadModel(text);
-		setActivationFunction();
+	public static Model model = new Model();
+
+	private Model() {
+		loadModel(loadData());
 	}
 	
+	protected Model(int inputNodes, int[] hiddenLayerNodes, int outputNodes) {
+		this.inputNodes = inputNodes;
+		this.hiddenLayerNodes = hiddenLayerNodes;
+		this.hiddenLayers = hiddenLayerNodes.length;
+		this.outputNodes = outputNodes;
+		//this.model = this;
+	}
+
+	private String loadData() {
+		StringBuilder data = new StringBuilder();
+		try {
+			File file = new File("./data/model.csv");
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				data.append(line + "\n");
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+
+		return data.toString();
+	}
+
+	public static Model getInstance() {
+		return model;
+	}
+
 	protected void setActivationFunction() {
-		if(hiddenLayers == 1) {
+		if (hiddenLayers == 1) {
 			hiddenLayerActivation = outputLayerActivation = new Sigmoid();
 		} else {
 			hiddenLayerActivation = new ReLU();
 			outputLayerActivation = new Softmax();
 		}
 	}
-	
+
 	public void loadModel(String text) {
 		String[] lines = text.split("\n");
 		LinkedList<double[]> weightArray = new LinkedList<>();
 		LinkedList<double[]> biasArray = new LinkedList<>();
 		int[] config = null;
-		for(int i = 0; i < lines.length; i++) {
+		for (int i = 0; i < lines.length; i++) {
 			String[] values = lines[i].split(",");
-			//Load model configuration
-			if(values[0].equals("config")) {
+			// Load model configuration
+			if (values[0].equals("config")) {
 				config = new int[values.length - 1];
 				hiddenLayerNodes = new int[config.length - 2];
 				inputNodes = Integer.parseInt(values[1]);
-				for(int j = 0 ; j <  config.length; j++) {
+				for (int j = 0; j < config.length; j++) {
 					config[j] = Integer.parseInt(values[j + 1]);
-					if(j == 0) {
+					if (j == 0) {
 						inputNodes = config[j];
-					} else if(j == config.length - 1) {
+					} else if (j == config.length - 1) {
 						outputNodes = config[j];
 					} else {
 						hiddenLayerNodes[j - 1] = config[j];
 					}
 				}
 			}
-			//Load model weights
+			// Load model weights
 			else if (values[0].equals("w")) {
 				double[] weightValue = new double[values.length - 1];
-				for(int j = 0; j < weightValue.length; j++) {
+				for (int j = 0; j < weightValue.length; j++) {
 					weightValue[j] = Double.parseDouble(values[j + 1]);
 				}
 				weightArray.addLast(weightValue);
 			}
-			//Load model biases
+			// Load model biases
 			else if (values[0].equals("b")) {
 				double[] biasValue = new double[values.length - 1];
-				for(int j = 0; j < biasValue.length; j++) {
+				for (int j = 0; j < biasValue.length; j++) {
 					biasValue[j] = Double.parseDouble(values[j + 1]);
 				}
 				biasArray.addLast(biasValue);
-			}	
+			}
 		}
-		
-		//Reconstruct model with weight and bias
+
+		// Reconstruct model with weight and bias
 		hiddenLayers = hiddenLayerNodes.length;
 		int modelDepth = hiddenLayers + 1;
 		weights = new SimpleMatrix[modelDepth];
 		biases = new SimpleMatrix[modelDepth];
-		for(int i = 0; i < modelDepth; i++) {
+		for (int i = 0; i < modelDepth; i++) {
 			double[][] weightValue = new double[config[i + 1]][config[i]];
 			double[][] biasValue = new double[config[i + 1]][1];
-			for(int j = 0; j < config[i + 1]; j++) {
-				//Reconstruct weights
+			for (int j = 0; j < config[i + 1]; j++) {
+				// Reconstruct weights
 				weightValue[j] = weightArray.remove();
-				//Reconstruct biases
+				// Reconstruct biases
 				biasValue[j] = biasArray.remove();
 			}
 			weights[i] = new SimpleMatrix(weightValue);
 			biases[i] = new SimpleMatrix(biasValue);
 		}
-	}	
-	
+	}
+
 	public double[] guess(double[] input) {
 		SimpleMatrix output = Matrix.arrayToMatrix(input);
 		for (int i = 0; i < hiddenLayers; i++) {
 			output = calculateLayer(weights[i], biases[i], output, hiddenLayerActivation);
-			
+
 		}
 		output = calculateLayer(weights[hiddenLayers], biases[hiddenLayers], output, outputLayerActivation);
 		return Matrix.matrixToArray(output);
 	}
 
-	protected SimpleMatrix calculateLayer(SimpleMatrix weights, SimpleMatrix bias, SimpleMatrix input, ActivationFunction function) {
+	protected SimpleMatrix calculateLayer(SimpleMatrix weights, SimpleMatrix bias, SimpleMatrix input,
+			ActivationFunction function) {
 		SimpleMatrix result = weights.mult(input);
 		result = result.plus(bias);
 		return function.apply(result, false);

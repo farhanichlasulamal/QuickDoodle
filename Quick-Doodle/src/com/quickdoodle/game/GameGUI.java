@@ -1,8 +1,6 @@
 package com.quickdoodle.game;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -16,15 +14,15 @@ import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
-import com.quickdoodle.game.gui.DrawArea;
-
 public class GameGUI extends JFrame {
 	static Point compCoords;
 	JLabel currentTime;
 	JLabel currentTarget;
 	JLabel currentPredict;
 	JLabel currentLevel;
+	DrawArea drawArea;
 	boolean finished;
+
 	
 	public GameGUI() {
 		addFrame();
@@ -139,6 +137,7 @@ public class GameGUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				InGameLevel();
+				play();
 			}
 		});
 		playButtonPanel.setBackground(new Color(0, 80, 115));
@@ -227,7 +226,7 @@ public class GameGUI extends JFrame {
 		mainPanel.add(centerPanel);
 		centerPanel.setLayout(null);
 
-		DrawArea drawArea = new DrawArea();
+		drawArea = new DrawArea();
 		drawArea.setBackground(Color.WHITE);
 		drawArea.setBounds(20, 18, 336, 336);
 		centerPanel.add(drawArea);
@@ -446,52 +445,57 @@ public class GameGUI extends JFrame {
 	}
 
 	public void play() {
-		finished = false;
-		playLevel();
-		System.out.println(finished);
-		ResultPanel();
-	}
+		finished = false;	
+		String[] levels = {"A", "B", "C", "D", "E"};
+		Thread level = new Thread(new Runnable() {
+			@Override
+			public void run() {
+				final double frameTime = 1.0 / 60.0;
+				long frameCounter = 0;
+				
+				int MAX_TIME = 5;
+				int timer = -1;
+				
+				long lastTime = System.nanoTime();
+				double unprocessedTime = 0;
+				for (int i = 0; i < 5; i++) {
+					currentLevel.setText(String.valueOf(i + 1));
+					currentTarget.setText(levels[i]);
+					System.out.println(i);
+					while (timer <= MAX_TIME) {
+						boolean update = false;
+						long startTime = System.nanoTime();
+						long passedTime = startTime - lastTime;
+						lastTime = startTime;
+						unprocessedTime += passedTime / (double) 1000000000L;
+						frameCounter += passedTime;
 
-	public void playLevel() {
-		final double frameTime = 1.0 / 60.0;
-		long frameCounter = 0;
-		
-		int MAX_TIME = 1;
-		int timer = 0;
-		
-		long lastTime = System.nanoTime();
-		double unprocessedTime = 0;
-		for (int i = 0; i < 5; i++) {
-			currentLevel.setText(String.valueOf(i + 1));
-			System.out.println(i);
-			while (timer < MAX_TIME) {
-				boolean update = false;
-				long startTime = System.nanoTime();
-				long passedTime = startTime - lastTime;
-				lastTime = startTime;
-				unprocessedTime += passedTime / (double) 1000000000L;
-				frameCounter += passedTime;
-
-				while (unprocessedTime > frameTime) {
-					unprocessedTime -= frameTime;
-
-					if (frameCounter >= 1000000000L) {
-						frameCounter = 0;
-						timer++;
-					}
-					if (update) {
-						//Ibarat fungsi draw diprocessing, semua operasi disini
-					} else {
-						try {
-							Thread.sleep(1);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
+						while (unprocessedTime > frameTime) {
+							unprocessedTime -= frameTime;
+							update = true;
+							if (frameCounter >= 1000000000L) {
+								frameCounter = 0;
+								currentTime.setText(String.valueOf(MAX_TIME - timer++));
+							}
+							if (update) {
+								
+								//Ibarat fungsi draw diprocessing, semua operasi disini
+							} else {
+								try {
+									Thread.sleep(1);
+								} catch (InterruptedException e) {
+									e.printStackTrace();
+								}
+							}
 						}
 					}
+					timer = -1;
 				}
+				ResultPanel();
 			}
-			timer = 0;
-		}
+			
+		});
+		level.start();
+		System.out.println(finished);
 	}
-	
 }

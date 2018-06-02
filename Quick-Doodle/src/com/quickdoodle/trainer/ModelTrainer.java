@@ -41,7 +41,6 @@ public class ModelTrainer {
 		return schedule;
 	}
 	
-	//TODO belum selesai
 	public void train() {
 		Float learningRates;
 		

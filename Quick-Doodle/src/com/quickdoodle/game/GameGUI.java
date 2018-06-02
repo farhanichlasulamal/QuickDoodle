@@ -27,21 +27,18 @@ public class GameGUI extends JFrame {
 	JLabel currentLevel;
 	DrawArea drawArea;
 	boolean finished;
+	int score = 0;
 	
 	private static HashMap<Integer, String> doodles = new HashMap<>();
 	
 	private void prepareDoodles() {
 		doodles.put(-1, "None");
-		doodles.put(0, "bat");
+		doodles.put(0, "bus");
 		doodles.put(1, "cat");
-		doodles.put(2, "circle");
+		doodles.put(2, "carrot");
 		doodles.put(3, "diamond");
 		doodles.put(4, "fish");
 		doodles.put(5, "flower");
-		doodles.put(6, "line");
-		doodles.put(7, "nail");
-		doodles.put(8, "star");
-		doodles.put(9, "zigzag");
 	}
 	
 	public GameGUI() {
@@ -449,7 +446,7 @@ public class GameGUI extends JFrame {
 		
 	}
 
-	public void ResultPanel() {
+	public void ResultPanel(int score) {
 		//add Panel
 		JPanel resultPanel = new JPanel();
 		resultPanel.setBounds(0, 0, 680, 430);
@@ -475,8 +472,8 @@ public class GameGUI extends JFrame {
 		lblTextScore.setFont(new Font("Tw Cen MT", Font.BOLD, 40));
 		lblTextScore.setBounds(224, 98, 232, 68);
 		mainPanel.add(lblTextScore);
-		
-		JLabel lblScore = new JLabel("40");
+		String result = score != 0 ? String.valueOf(score) : " 0 ";
+		JLabel lblScore = new JLabel(result);
 		lblScore.setHorizontalAlignment(SwingConstants.CENTER);
 		lblScore.setForeground(new Color(1, 187, 234));
 		lblScore.setFont(new Font("Tw Cen MT", Font.BOLD, 50));
@@ -603,14 +600,15 @@ public class GameGUI extends JFrame {
 	
 	public void play() {
 		Integer[] levels = prepareLevel();
-		finished = false;	
+		finished = false;
+		score = 0;
 		Thread level = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				final double frameTime = 1.0 / 60.0;
 				long frameCounter = 0;
 				
-				int MAX_TIME = 5;
+				int MAX_TIME = 20;
 				int timer = -1;
 				
 				long lastTime = System.nanoTime();
@@ -619,6 +617,7 @@ public class GameGUI extends JFrame {
 					currentLevel.setText(String.valueOf(i + 1));
 					currentTarget.setText(doodles.get(levels[i]));
 					System.out.println(i);
+					time:
 					while (timer <= MAX_TIME) {
 						boolean update = false;
 						long startTime = System.nanoTime();
@@ -633,8 +632,13 @@ public class GameGUI extends JFrame {
 								frameCounter = 0;
 								currentTime.setText(String.valueOf(MAX_TIME - timer++));
 							}
-							if (update) {	
-								currentPredict.setText(doodles.get(drawArea.currentPredict));
+							if (update) {
+								int labelPredict = drawArea.currentPredict;
+								currentPredict.setText(doodles.get(labelPredict));
+								if(labelPredict == levels[i]) {
+									score += 20;
+									break time;
+								}
 							} else {
 								try {
 									Thread.sleep(1);
@@ -647,7 +651,7 @@ public class GameGUI extends JFrame {
 					drawArea.clear();
 					timer = -1;
 				}
-				ResultPanel();
+				ResultPanel(score);
 			}
 			
 		});

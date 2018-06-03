@@ -6,6 +6,8 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.util.Arrays;
+import java.util.LinkedHashMap;
 
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
@@ -17,6 +19,8 @@ import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 
+import com.quickdoodle.model.activationfunction.DataUtils;
+
 public class TrainerGUI extends JFrame {
 	static Point compCoords;
 	private JTextField textFieldName;
@@ -26,10 +30,23 @@ public class TrainerGUI extends JFrame {
 	private JTextField textFieldRatio;
 	private JTextArea textAreaSchedule;
 	private JTextArea textAreaLog;
-
+	
+	private ModelTrainer trainer;
+	private String[] objectList;
+	private Thread trainerThread;
+	
 	public TrainerGUI() {
+		trainer = new ModelTrainer();
+		//ini object list, seharusnya dari data base
+		objectList = new String[]{
+			"0 bus", 
+			"1 cat", 
+			"2 carrot", 
+			"3 diamond", 
+			"4 fish",
+			"5 flower"};
 		addFrame();
-		GUI();
+		buildGUI();
 		this.setLocationRelativeTo(null);
 	}
 	
@@ -100,7 +117,7 @@ public class TrainerGUI extends JFrame {
 		return topPanel;
 	}
 	
-	public void GUI() {
+	public void buildGUI() {
 		//add Panel
 		JPanel Trainer = new JPanel();
 		Trainer.setBounds(0, 0, 680, 430);
@@ -209,12 +226,39 @@ public class TrainerGUI extends JFrame {
 		runButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				String Name = textFieldName.getText();
-				String Schedule = textAreaSchedule.getText();
-				String Epoch = textFieldEpoch.getText();
-				String Layer = textFieldLayer.getText();
-				String Batch = textFieldBatch.getText();
-				String Ratio = textFieldRatio.getText();
+				String stringName = textFieldName.getText();
+				String stringSchedule = textAreaSchedule.getText();
+				String stringEpoch = textFieldEpoch.getText();
+				String stringLayer = textFieldLayer.getText();
+				String stringBatch = textFieldBatch.getText();
+				String stringRatio = textFieldRatio.getText();
+				try {
+					textAreaLog.removeAll();
+					if(trainerThread != null) {
+						trainerThread.stop();
+					}
+					LinkedHashMap<Integer, Float> schedule = parseScheduleInput(stringSchedule);
+					int[] hiddenLayers = parseLayerInput(stringLayer);
+					trainer.setMaxEpoch(Integer.parseInt(stringEpoch));
+					trainer.setSchedule(schedule);
+					trainer.initializeModel(784, hiddenLayers, objectList.length);
+					String dataSet = trainer.initializeDataset(objectList, Integer.parseInt(stringBatch), Float.parseFloat(stringRatio));
+					textAreaLog.setText(dataSet);
+					trainerThread = new Thread(new Runnable() {
+
+						@Override
+						public void run() {
+							trainer.train(textAreaLog);							
+						}
+						
+					});
+					trainerThread.start();
+					String result = trainer.exportModel();
+					//Kirim kedata base
+					DataUtils.saveText("./" +stringName + ".csv", result);
+				} catch (Exception ex) {
+					ex.printStackTrace();
+				}				
 			}
 		});
 		runButtonPanel.setBackground(new Color(111, 190, 75));
@@ -239,8 +283,25 @@ public class TrainerGUI extends JFrame {
 
 		
 	}
-
-	public void Try() {
-		
+	
+	public LinkedHashMap<Integer, Float> parseScheduleInput(String input) throws Exception {
+		String[] schedules = input.split("\n");
+		LinkedHashMap<Integer, Float> result = new LinkedHashMap<>();
+		for(String schedule : schedules) {
+			schedule = schedule.replaceAll(" ","");
+			String[] values = schedule.split(",");
+			if(values.length != 2) {
+				throw new IllegalArgumentException();
+			}
+			result.put(Integer.parseInt(values[0]), Float.parseFloat(values[1]));
+		}
+		return result;
+	}
+	
+	public int[] parseLayerInput(String input) throws Exception{
+		input = input.replaceAll(" ","");
+		String[] layers = input.split(",");
+		int[] result = Arrays.asList(layers).stream().mapToInt(Integer::parseInt).toArray();
+		return result;
 	}
 }

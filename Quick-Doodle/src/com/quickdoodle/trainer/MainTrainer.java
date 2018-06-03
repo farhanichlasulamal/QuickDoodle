@@ -6,7 +6,6 @@ public class MainTrainer {
 		TrainerGUI frame = new TrainerGUI();
 		frame.setVisible(true);
 		frame.setResizable(false);
-		System.out.println("sdfsda");
 	}
 
 }

@@ -29,7 +29,7 @@ public class Batch {
 		labelName = doodleData[1];
 		try {
 			String pixelValues;
-			ins = new FileInputStream("./Database Dummy/" + filename + ".csv");
+			ins = new FileInputStream("D:/My Java/Neural Net/Database Dummy/" + filename + ".csv");
 			r = new InputStreamReader(ins);
 			br = new BufferedReader(r);
 			while ((pixelValues = br.readLine()) != null && doodles.size() < capacity) {

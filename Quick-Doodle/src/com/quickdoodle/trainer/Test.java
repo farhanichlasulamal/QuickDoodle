@@ -30,7 +30,7 @@ public class Test {
 		
 		//Ukuran batch dan rasio
 		System.out.println(trainer.initializeDataset(objectList, 40000, 0.9f));
-		trainer.train();
+		trainer.train(null);
 		
 		//Run dan save input nama
 		DataUtils.saveText("./model4"

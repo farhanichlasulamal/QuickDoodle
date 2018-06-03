@@ -1,8 +1,6 @@
 package com.quickdoodle.trainer;
 
-import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.MouseAdapter;
@@ -10,20 +8,14 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.ImageIcon;
-import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
-import javax.swing.JSlider;
-import javax.swing.JTextField;
-import javax.swing.JTextArea;
-import com.jgoodies.forms.factories.DefaultComponentFactory;
-import javax.swing.JProgressBar;
-import javax.swing.JScrollBar;
-import javax.swing.JScrollPane;
 
 public class TrainerGUI extends JFrame {
 	static Point compCoords;
@@ -223,8 +215,6 @@ public class TrainerGUI extends JFrame {
 				String Layer = textFieldLayer.getText();
 				String Batch = textFieldBatch.getText();
 				String Ratio = textFieldRatio.getText();
-				
-				
 			}
 		});
 		runButtonPanel.setBackground(new Color(111, 190, 75));
@@ -238,8 +228,8 @@ public class TrainerGUI extends JFrame {
 		lblRun.setForeground(Color.WHITE);
 		lblRun.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		lblRun.setHorizontalAlignment(SwingConstants.CENTER);
-
-		textAreaLog = new JTextArea("");
+		
+		textAreaLog = new JTextArea();
 		textAreaLog.setForeground(Color.WHITE);
 		textAreaLog.setBackground(Color.BLACK);
 		JScrollPane scroll = new JScrollPane(textAreaLog);

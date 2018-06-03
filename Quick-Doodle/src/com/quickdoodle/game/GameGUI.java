@@ -14,6 +14,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
@@ -25,7 +26,11 @@ public class GameGUI extends JFrame {
 	JLabel currentTarget;
 	JLabel currentPredict;
 	JLabel currentLevel;
+	JLabel correctAns;
+	JLabel incorrectAns;
+	JCheckBox shareDataCheck;
 	DrawArea drawArea;
+	Thread level;
 	boolean finished;
 	int score = 0;
 	
@@ -151,7 +156,8 @@ public class GameGUI extends JFrame {
 		lblClose.setHorizontalAlignment(SwingConstants.CENTER);
 		setting.add(lblClose);
 		
-		JCheckBox shareDataCheck = new JCheckBox("Share Data Check");
+		shareDataCheck = new JCheckBox("Share Data Check");
+		shareDataCheck.setSelected(false);
 		shareDataCheck.setFont(new Font("Tw Cen MT", Font.PLAIN, 12));
 		shareDataCheck.setForeground(Color.WHITE);
 		shareDataCheck.setBackground(new Color(0, 80, 115));
@@ -159,6 +165,12 @@ public class GameGUI extends JFrame {
 		setting.add(shareDataCheck);
 		
 		JPanel saveButtonPanel = new JPanel();
+		saveButtonPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				//mouse click check button
+			}
+		});
 		saveButtonPanel.setBackground(new Color(111, 190, 75));
 		saveButtonPanel.setBounds(31, 162, 90, 28);
 		setting.add(saveButtonPanel);
@@ -288,7 +300,14 @@ public class GameGUI extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				//BACK TO MENU
-				StartMenu();
+			    int confirmed = JOptionPane.showConfirmDialog(null, 
+		            "Are you sure you want to enter menu?", "Exit Program Message Box",
+		            JOptionPane.YES_NO_OPTION);
+
+		        if (confirmed == JOptionPane.YES_OPTION) {
+		        	StartMenu();
+		        //	level.interrupt();
+		        }
 			}
 		});
 		lblBack.setFont(new Font("Tahoma", Font.PLAIN, 15));
@@ -300,12 +319,26 @@ public class GameGUI extends JFrame {
 		centerPanel.setBounds(62, 0, 375, 430);
 		mainPanel.add(centerPanel);
 		centerPanel.setLayout(null);
+		
+		correctAns = new JLabel("");
+		correctAns.setBounds(100, 125, 173, 125);
+		centerPanel.add(correctAns);
+		correctAns.setIcon(new ImageIcon("./img/CorrectPredict.png"));
+		correctAns.setHorizontalAlignment(SwingConstants.CENTER);
+		correctAns.setVisible(false);
+		
+		incorrectAns = new JLabel("");
+		incorrectAns.setBounds(100, 125, 173, 125);
+		centerPanel.add(incorrectAns);
+		incorrectAns.setIcon(new ImageIcon("./img/IncorrectPredict.png"));
+		incorrectAns.setHorizontalAlignment(SwingConstants.CENTER);
+		incorrectAns.setVisible(false);
 
 		drawArea = new DrawArea();
 		drawArea.setBackground(Color.WHITE);
 		drawArea.setBounds(20, 18, 336, 336);
 		centerPanel.add(drawArea);
-
+		
 		JPanel deleteButtonPanel = new JPanel();
 		deleteButtonPanel.setLayout(null);
 		deleteButtonPanel.setBackground(new Color(0, 80, 115));
@@ -446,7 +479,7 @@ public class GameGUI extends JFrame {
 		
 	}
 
-	public void ResultPanel(int score) {
+	public void ResultPanel() {
 		//add Panel
 		JPanel resultPanel = new JPanel();
 		resultPanel.setBounds(0, 0, 680, 430);
@@ -472,7 +505,7 @@ public class GameGUI extends JFrame {
 		lblTextScore.setFont(new Font("Tw Cen MT", Font.BOLD, 40));
 		lblTextScore.setBounds(224, 98, 232, 68);
 		mainPanel.add(lblTextScore);
-		String result = score != 0 ? String.valueOf(score) : " 0 ";
+		String result = score != 0 ? String.valueOf(score) : "0";
 		JLabel lblScore = new JLabel(result);
 		lblScore.setHorizontalAlignment(SwingConstants.CENTER);
 		lblScore.setForeground(new Color(1, 187, 234));
@@ -602,13 +635,13 @@ public class GameGUI extends JFrame {
 		Integer[] levels = prepareLevel();
 		finished = false;
 		score = 0;
-		Thread level = new Thread(new Runnable() {
+		level = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				final double frameTime = 1.0 / 60.0;
 				long frameCounter = 0;
-				
-				int MAX_TIME = 20;
+				boolean correct = false;
+				int MAX_TIME = 19;
 				int timer = -1;
 				
 				long lastTime = System.nanoTime();
@@ -616,7 +649,7 @@ public class GameGUI extends JFrame {
 				for (int i = 0; i < 5; i++) {
 					currentLevel.setText(String.valueOf(i + 1));
 					currentTarget.setText(doodles.get(levels[i]));
-					System.out.println(i);
+		//			System.out.println(i);
 					time:
 					while (timer <= MAX_TIME) {
 						boolean update = false;
@@ -636,6 +669,15 @@ public class GameGUI extends JFrame {
 								int labelPredict = drawArea.currentPredict;
 								currentPredict.setText(doodles.get(labelPredict));
 								if(labelPredict == levels[i]) {
+									try {
+										correctAns.setVisible(true);
+										Thread.sleep(1000);
+									} catch (InterruptedException e) {
+										// TODO Auto-generated catch block
+										e.printStackTrace();
+									}
+									correctAns.setVisible(false);
+									correct = true;
 									score += 20;
 									break time;
 								}
@@ -649,13 +691,23 @@ public class GameGUI extends JFrame {
 						}
 					}
 					drawArea.clear();
+					if(!correct) {
+						try {
+							incorrectAns.setVisible(true);
+							Thread.sleep(1000);
+						} catch (InterruptedException e) {
+							// TODO Auto-generated catch block
+							e.printStackTrace();
+						}
+						incorrectAns.setVisible(false);
+					}
 					timer = -1;
 				}
-				ResultPanel(score);
+				ResultPanel();
 			}
 			
 		});
 		level.start();
-		System.out.println(finished);
+//		System.out.println(finished);
 	}
 }

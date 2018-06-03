@@ -2,11 +2,11 @@ package com.quickdoodle.trainer;
 
 import java.util.LinkedHashMap;
 
-import trainer.ModelTrainer;
-import utilities.DataUtils;
+import com.quickdoodle.model.activationfunction.DataUtils;
 
 public class Test {
 	public static void main(String[] args) {
+		//Input schedule
 		LinkedHashMap<Integer, Float> schedule = new LinkedHashMap<Integer, Float>();
 		schedule.put(1, 0.1f);
 		schedule.put(3, 0.078f);
@@ -14,16 +14,25 @@ public class Test {
 		schedule.put(7, 0.035f);
 		schedule.put(8, 0.018f);
 		
-		ModelTrainer trainer = new ModelTrainer("./model3.csv");
+		ModelTrainer trainer = new ModelTrainer();
+		
+		//Max epoch
 		trainer.setMaxEpoch(10);
 		trainer.setSchedule(schedule);
 		String[] objectList = {
 				"0 bus", "1 cat", "2 carrot", "3 diamond", "4 fish",
 			"5 flower"};		
 		
-		//trainer.initializeModel(784, new int[]{1500}, 6);
+		//Input konfigurasi layer
+		//100, 28, 299
+		trainer.initializeModel(784, new int[]{1500}, 6);
+		//trainer.initializeModel("String")
+		
+		//Ukuran batch dan rasio
 		System.out.println(trainer.initializeDataset(objectList, 40000, 0.9f));
 		trainer.train();
+		
+		//Run dan save input nama
 		DataUtils.saveText("./model4"
 				+ ""
 				+ ".csv", trainer.exportModel());

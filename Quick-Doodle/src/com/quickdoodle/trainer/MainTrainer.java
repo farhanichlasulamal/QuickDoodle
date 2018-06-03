@@ -1,10 +1,11 @@
-package com.quickdoodle.game;
+package com.quickdoodle.trainer;
 
-public class Main {
+public class MainTrainer {
 
 	public static void main(String[] args) {
-		GameGUI frame = new GameGUI();
+		TrainerGUI frame = new TrainerGUI();
 		frame.setVisible(true);
 		frame.setResizable(false);
 	}
+
 }

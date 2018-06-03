@@ -51,7 +51,7 @@ public class DrawArea extends JComponent {
 				if (g2d != null) {
 					// draw line if g2 context not null
 					g2d.drawLine(oldX, oldY, currentX, currentY);
-					// set wight
+					// set weight
 					g2d.setStroke(new BasicStroke(5, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
 					// refresh draw area to repaint
 					repaint();

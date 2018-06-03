@@ -30,8 +30,7 @@ public class GameGUI extends JFrame {
 	JLabel incorrectAns;
 	JCheckBox shareDataCheck;
 	DrawArea drawArea;
-	Thread level;
-	boolean finished;
+	Thread levelThread;
 	int score = 0;
 	
 	private static HashMap<Integer, String> doodles = new HashMap<>();
@@ -305,8 +304,10 @@ public class GameGUI extends JFrame {
 		            JOptionPane.YES_NO_OPTION);
 
 		        if (confirmed == JOptionPane.YES_OPTION) {
+		        	if(levelThread != null) {
+						levelThread.stop();
+					}
 		        	StartMenu();
-		        //	level.interrupt();
 		        }
 			}
 		});
@@ -633,9 +634,8 @@ public class GameGUI extends JFrame {
 	
 	public void play() {
 		Integer[] levels = prepareLevel();
-		finished = false;
 		score = 0;
-		level = new Thread(new Runnable() {
+		levelThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				final double frameTime = 1.0 / 60.0;
@@ -707,7 +707,7 @@ public class GameGUI extends JFrame {
 			}
 			
 		});
-		level.start();
+		levelThread.start();
 //		System.out.println(finished);
 	}
 }

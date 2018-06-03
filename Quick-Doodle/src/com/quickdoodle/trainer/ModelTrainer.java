@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import javax.swing.JTextArea;
+
 import com.quickdoodle.model.TrainableModel;
 import com.quickdoodle.trainer.datahandler.Dataset;
 import com.quickdoodle.trainer.datahandler.Doodle;
@@ -22,7 +24,7 @@ public class ModelTrainer {
 		schedule = new LinkedHashMap<>();
 		schedule.put(1, 0.1f);
 	}
-
+	
 	public String initializeDataset(String[] objectNames, int quantity, float ratio) {
 		if (quantity < 1) {
 			throw new IllegalArgumentException("Invalid Quantity Value");
@@ -41,17 +43,22 @@ public class ModelTrainer {
 		return schedule;
 	}
 	
-	//TODO belum selesai
-	public void train() {
+	public void train(JTextArea log) {
 		Float learningRates;
 		
 		for (int i = 1; i <= maxEpoch; i++) {
 			if ((learningRates = schedule.get(i)) != null) {
 				model.setLearningRate(learningRates);
 			}
+			log.append("Epoch :" +i+"\n");
+			int n = 0;
 			for(Doodle trainData : dataset.getTrainDatas()) {
 				model.train(trainData.getPixelValues(), trainData.getTarget());
+				if(n++ % (dataset.getTrainDataSize() / 100) == 0) {
+					log.append("|");
+				}
 			}
+			log.append("\n");
 			if ((maxEpoch / 10) == 0 || i % (maxEpoch / 10) == 0) {
 				float[] modelAccuracy = new float[dataset.getClassSize()];
 				for(Doodle testData : dataset.getTestDatas()) {
@@ -61,16 +68,15 @@ public class ModelTrainer {
 					}
 				}
 				for(int j = 0; j < dataset.getClassSize(); j++) {
-					System.out.println(dataset.getLabelName(j) +"\t" +(float)modelAccuracy[j] / dataset.getTestQuantity(j)+"\t");
+					log.append(dataset.getLabelName(j) +"\t" +(float)modelAccuracy[j] / dataset.getTestQuantity(j)+"\n");
 				}
-				System.out.println("");
+				log.append("\n");
 			}
 		}
 	}
 	
 	private boolean isCorrect(double[] guessResult, int label) {
 	  int awnser = 0;
-	  System.out.println();
 	  for ( int i = 1; i < guessResult.length; i++ ) {
 	      if ( guessResult[i] > guessResult[awnser] ) awnser = i;
 	  }

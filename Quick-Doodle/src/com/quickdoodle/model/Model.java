@@ -1,5 +1,10 @@
 package com.quickdoodle.model;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.LinkedList;
 
 import org.ejml.simple.SimpleMatrix;
@@ -24,13 +29,38 @@ public class Model {
 	protected SimpleMatrix[] weights;
 	protected SimpleMatrix[] biases;
 	
-	protected Model() {}
+	protected Model(int inputNodes, int[] hiddenLayerNodes, int outputNodes) {
+		this.inputNodes = inputNodes;
+		this.hiddenLayerNodes = hiddenLayerNodes;
+		this.hiddenLayers = hiddenLayerNodes.length;
+		this.outputNodes = outputNodes;
+	}
 	
-	public Model(String text) {
-		loadModel(text);
+	public Model() {
+		String data = loadData();
+		loadModel(data);
 		setActivationFunction();
 	}
 	
+	private String loadData() {
+		StringBuilder data = new StringBuilder();
+		try {
+			File file = new File("./data/model.csv");
+			FileReader fr = new FileReader(file);
+			BufferedReader br = new BufferedReader(fr);
+			String line = null;
+			while ((line = br.readLine()) != null) {
+				if(!line.equals(""))
+					data.append(line + "\n");
+			}
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return data.toString();
+	}
+
 	protected void setActivationFunction() {
 		if(hiddenLayers == 1) {
 			hiddenLayerActivation = outputLayerActivation = new Sigmoid();
@@ -114,5 +144,24 @@ public class Model {
 		SimpleMatrix result = weights.mult(input);
 		result = result.plus(bias);
 		return function.apply(result, false);
+	}
+	
+	public String export() {
+		//Save model configuration
+		StringBuilder buffer = new StringBuilder();
+		buffer.append("config," +String.valueOf(inputNodes) +",");
+		for(int nodes : hiddenLayerNodes) {
+			buffer.append(String.valueOf(nodes) +",");
+		}
+		buffer.append(String.valueOf(outputNodes +"\n"));
+		//Save weights
+		for(SimpleMatrix weight : weights) {
+			buffer.append(Matrix.matrixToString(weight, "w") +"\n");
+		}
+		//Save biases
+		for(SimpleMatrix bias : biases) {
+			buffer.append(Matrix.matrixToString(bias, "b") +"\n");
+		}
+		return buffer.toString();
 	}
 }

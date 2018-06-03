@@ -13,10 +13,7 @@ public class TrainableModel extends Model{
 	private double learningRate = 0.1;
 	
 	public TrainableModel(int inputNodes, int[] hiddenLayerNodes, int outputNodes) {
-		this.inputNodes = inputNodes;
-		this.hiddenLayerNodes = hiddenLayerNodes;
-		this.hiddenLayers = hiddenLayerNodes.length;
-		this.outputNodes = outputNodes;
+		super(inputNodes, hiddenLayerNodes, outputNodes);
 		initializeWeights();
 		initializeBiases();
 		setActivationFunction();

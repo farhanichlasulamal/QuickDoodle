@@ -4,6 +4,7 @@
 	<classpathentry kind="src" path="img"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/Connector MySQL"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="dependencies/ejml-cdense-0.33-sources.jar"/>
 	<classpathentry kind="lib" path="dependencies/ejml-cdense-0.33.jar"/>
 	<classpathentry kind="lib" path="dependencies/ejml-core-0.33-sources.jar"/>
@@ -20,5 +21,7 @@
 	<classpathentry kind="lib" path="dependencies/ejml-simple-0.33.jar"/>
 	<classpathentry kind="lib" path="dependencies/ejml-zdense-0.33-sources.jar"/>
 	<classpathentry kind="lib" path="dependencies/ejml-zdense-0.33.jar"/>
+	<classpathentry kind="lib" path="jgoodies-common-1.8.0.jar" sourcepath="jgoodies-common-1.8.0-sources.jar"/>
+	<classpathentry kind="lib" path="jgoodies-forms-1.8.0.jar" sourcepath="jgoodies-forms-1.8.0-sources.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

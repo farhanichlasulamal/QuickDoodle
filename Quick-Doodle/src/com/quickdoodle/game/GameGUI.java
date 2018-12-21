@@ -7,7 +7,8 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.util.HashMap;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.Random;
 import java.util.Set;
 
 import javax.swing.ImageIcon;
@@ -30,14 +31,13 @@ public class GameGUI extends JFrame {
 	JLabel incorrectAns;
 	JCheckBox shareDataCheck;
 	DrawArea drawArea;
-	Thread level;
-	boolean finished;
+	Thread levelThread;
 	int score = 0;
-	
+
 	private static HashMap<Integer, String> doodles = new HashMap<>();
-	
+
 	private void prepareDoodles() {
-		doodles.put(-1, "None");
+		doodles.put(-1, "none");
 		doodles.put(0, "bus");
 		doodles.put(1, "cat");
 		doodles.put(2, "carrot");
@@ -45,38 +45,39 @@ public class GameGUI extends JFrame {
 		doodles.put(4, "fish");
 		doodles.put(5, "flower");
 	}
-	
+
 	public GameGUI() {
 		prepareDoodles();
 		addFrame();
 		StartMenu();
-		//ResultPanel();
-		//InGameLevel();
+		// ResultPanel();
+		// InGameLevel();
 		this.setLocationRelativeTo(null);
 	}
 
 	public void addFrame() {
 		setTitle("Quick Doodle Game");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-	    setUndecorated(true);
+		setUndecorated(true);
 		setBounds(0, 0, 680, 460);
 	}
-	
+
 	public JPanel TopPanel() {
 		JPanel topPanel = new JPanel();
 		topPanel.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				Point currCoords = e.getLocationOnScreen();
-                setLocation(currCoords.x - compCoords.x, currCoords.y - compCoords.y);
+				setLocation(currCoords.x - compCoords.x, currCoords.y - compCoords.y);
 			}
 		});
-		
+
 		topPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				compCoords = e.getPoint();
 			}
+
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				compCoords = null;
@@ -85,7 +86,7 @@ public class GameGUI extends JFrame {
 		topPanel.setBackground(new Color(0, 80, 115));
 		topPanel.setBounds(0, 0, 680, 30);
 		topPanel.setLayout(null);
-		
+
 		JLabel minimizeWindowButton = new JLabel("");
 		minimizeWindowButton.addMouseListener(new MouseAdapter() {
 			@Override
@@ -99,7 +100,7 @@ public class GameGUI extends JFrame {
 		minimizeWindowButton.setHorizontalAlignment(SwingConstants.CENTER);
 		minimizeWindowButton.setForeground(Color.WHITE);
 		minimizeWindowButton.setFont(new Font("Tw Cen MT", Font.BOLD, 14));
-		
+
 		JLabel exitWindowButton = new JLabel("");
 		exitWindowButton.setBounds(640, 0, 40, 30);
 		topPanel.add(exitWindowButton);
@@ -111,13 +112,13 @@ public class GameGUI extends JFrame {
 		});
 		exitWindowButton.setIcon(new ImageIcon("./img/closeWindowButton.png"));
 		exitWindowButton.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		return topPanel;
 	}
-	
+
 	public void StartMenu() {
-		
-		//add Panel
+
+		// add Panel
 		JPanel startMenu = new JPanel();
 		startMenu.setBounds(0, 0, 680, 430);
 		startMenu.setBackground(Color.BLACK);
@@ -125,25 +126,25 @@ public class GameGUI extends JFrame {
 		startMenu.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(startMenu);
 		startMenu.setLayout(null);
-		
-		//add Top Panel
+
+		// add Top Panel
 		startMenu.add(TopPanel());
-		
-		//add Main Panel
+
+		// add Main Panel
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBackground(Color.WHITE);
 		mainPanel.setBounds(0, 30, 680, 430);
 		mainPanel.setLayout(null);
 		startMenu.add(mainPanel);
 
-		//Panel Setting
+		// Panel Setting
 		JPanel setting = new JPanel();
 		setting.setBackground(new java.awt.Color(0, 80, 115));
 		setting.setBounds(470, 0, 210, 430);
 		setting.setVisible(false);
 		mainPanel.add(setting);
 		setting.setLayout(null);
-		
+
 		JLabel lblClose = new JLabel("");
 		lblClose.setIcon(new ImageIcon("./img/CloseSettingButton.png"));
 		lblClose.setBounds(169, 21, 20, 20);
@@ -155,7 +156,7 @@ public class GameGUI extends JFrame {
 		});
 		lblClose.setHorizontalAlignment(SwingConstants.CENTER);
 		setting.add(lblClose);
-		
+
 		shareDataCheck = new JCheckBox("Share Data Check");
 		shareDataCheck.setSelected(false);
 		shareDataCheck.setFont(new Font("Tw Cen MT", Font.PLAIN, 12));
@@ -163,41 +164,53 @@ public class GameGUI extends JFrame {
 		shareDataCheck.setBackground(new Color(0, 80, 115));
 		shareDataCheck.setBounds(31, 120, 129, 23);
 		setting.add(shareDataCheck);
-		
+
 		JPanel saveButtonPanel = new JPanel();
 		saveButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				//mouse click check button
+				// mouse click check button
 			}
 		});
+		
+		JPanel updateButtonPanel = new JPanel();
+		updateButtonPanel.setLayout(null);
+		updateButtonPanel.setBackground(new Color(1, 187, 234));
+		updateButtonPanel.setBounds(48, 355, 121, 42);
+		setting.add(updateButtonPanel);
+		
+		JLabel lblUpdate = new JLabel("UPDATE");
+		lblUpdate.setBounds(0, 0, 121, 42);
+		updateButtonPanel.add(lblUpdate);
+		lblUpdate.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUpdate.setForeground(Color.WHITE);
+		lblUpdate.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		saveButtonPanel.setBackground(new Color(111, 190, 75));
 		saveButtonPanel.setBounds(31, 162, 90, 28);
 		setting.add(saveButtonPanel);
 		saveButtonPanel.setLayout(null);
-		
+
 		JLabel lblSave = new JLabel("Save");
 		lblSave.setBounds(0, 0, 90, 28);
 		saveButtonPanel.add(lblSave);
 		lblSave.setForeground(Color.WHITE);
 		lblSave.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		lblSave.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		JLabel lblSetting = new JLabel("Setting");
 		lblSetting.setHorizontalAlignment(SwingConstants.LEFT);
 		lblSetting.setFont(new Font("Tw Cen MT", Font.PLAIN, 34));
-		lblSetting.setForeground(new java.awt.Color(1,187, 234));
+		lblSetting.setForeground(new java.awt.Color(1, 187, 234));
 		lblSetting.setBounds(31, 67, 100, 35);
 		setting.add(lblSetting);
-		
-		
-		//panel buttom
+
+		// panel buttom
 		JPanel buttomPanel = new JPanel();
 		buttomPanel.setBounds(0, 245, 680, 185);
 		mainPanel.add(buttomPanel);
 		buttomPanel.setBackground(new Color(111, 190, 75));
 		buttomPanel.setLayout(null);
-		
+
 		JPanel howToButtonPanel = new JPanel();
 		howToButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
@@ -209,14 +222,14 @@ public class GameGUI extends JFrame {
 		howToButtonPanel.setBackground(new Color(0, 80, 115));
 		howToButtonPanel.setBounds(375, 20, 90, 28);
 		buttomPanel.add(howToButtonPanel);
-		
+
 		JLabel lblHowTo = new JLabel("How To");
 		lblHowTo.setBounds(0, 0, 90, 28);
 		howToButtonPanel.add(lblHowTo);
 		lblHowTo.setForeground(Color.WHITE);
 		lblHowTo.setHorizontalAlignment(SwingConstants.CENTER);
 		lblHowTo.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
-		
+
 		JPanel playButtonPanel = new JPanel();
 		playButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
@@ -229,14 +242,14 @@ public class GameGUI extends JFrame {
 		playButtonPanel.setBounds(219, 20, 90, 28);
 		buttomPanel.add(playButtonPanel);
 		playButtonPanel.setLayout(null);
-		
+
 		JLabel lblPlay = new JLabel("Play");
 		lblPlay.setBounds(0, 0, 90, 28);
 		playButtonPanel.add(lblPlay);
 		lblPlay.setForeground(Color.WHITE);
 		lblPlay.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		lblPlay.setHorizontalAlignment(SwingConstants.CENTER);
-		
+
 		JLabel lblSettingButton = new JLabel("");
 		lblSettingButton.setBounds(650, 154, 20, 20);
 		buttomPanel.add(lblSettingButton);
@@ -245,28 +258,27 @@ public class GameGUI extends JFrame {
 			public void mouseClicked(MouseEvent e) {
 				setting.setVisible(true);
 			}
-			
+
 		});
 		lblSettingButton.setIcon(new ImageIcon("./img/SettingButton.png"));
 		lblSettingButton.setHorizontalAlignment(SwingConstants.CENTER);
-		
-		
+
 		JLabel label = new JLabel("\u00A92018");
 		label.setFont(new Font("Tw Cen MT", Font.PLAIN, 12));
 		label.setForeground(new Color(0, 80, 115));
 		label.setBounds(10, 165, 46, 14);
 		buttomPanel.add(label);
-		
+
 		JLabel logo = new JLabel("");
 		logo.setBounds(208, 137, 265, 98);
 		mainPanel.add(logo);
 		logo.setIcon(new ImageIcon("./img/Logo.png"));
 		logo.setHorizontalAlignment(SwingConstants.CENTER);
 	}
-	
+
 	public void InGameLevel() {
-		
-		//add Panel
+
+		// add Panel
 		JPanel inGameLevel = new JPanel();
 		inGameLevel.setBounds(0, 0, 680, 430);
 		inGameLevel.setBackground(Color.BLACK);
@@ -274,18 +286,18 @@ public class GameGUI extends JFrame {
 		inGameLevel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(inGameLevel);
 		inGameLevel.setLayout(null);
-		
-		//add Top Panel
+
+		// add Top Panel
 		inGameLevel.add(TopPanel());
-		
-		//add Main Panel
+
+		// add Main Panel
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBackground(Color.WHITE);
 		mainPanel.setBounds(0, 30, 680, 430);
 		mainPanel.setLayout(null);
 		inGameLevel.add(mainPanel);
-		
-		//add Left Panel
+
+		// add Left Panel
 		JPanel leftPanel = new JPanel();
 		leftPanel.setBackground(Color.WHITE);
 		leftPanel.setBounds(0, 0, 62, 430);
@@ -299,34 +311,35 @@ public class GameGUI extends JFrame {
 		lblBack.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//BACK TO MENU
-			    int confirmed = JOptionPane.showConfirmDialog(null, 
-		            "Are you sure you want to enter menu?", "Exit Program Message Box",
-		            JOptionPane.YES_NO_OPTION);
+				// BACK TO MENU
+				int confirmed = JOptionPane.showConfirmDialog(null, "Are you sure you want to enter menu?",
+						"Exit Program Message Box", JOptionPane.YES_NO_OPTION);
 
-		        if (confirmed == JOptionPane.YES_OPTION) {
-		        	StartMenu();
-		        //	level.interrupt();
-		        }
+				if (confirmed == JOptionPane.YES_OPTION) {
+					if (levelThread != null) {
+						levelThread.stop();
+					}
+					StartMenu();
+				}
 			}
 		});
 		lblBack.setFont(new Font("Tahoma", Font.PLAIN, 15));
 		lblBack.setHorizontalAlignment(SwingConstants.CENTER);
 
-		//add Center Panel
+		// add Center Panel
 		JPanel centerPanel = new JPanel();
 		centerPanel.setBackground(new Color(111, 190, 75));
 		centerPanel.setBounds(62, 0, 375, 430);
 		mainPanel.add(centerPanel);
 		centerPanel.setLayout(null);
-		
+
 		correctAns = new JLabel("");
 		correctAns.setBounds(100, 125, 173, 125);
 		centerPanel.add(correctAns);
 		correctAns.setIcon(new ImageIcon("./img/CorrectPredict.png"));
 		correctAns.setHorizontalAlignment(SwingConstants.CENTER);
 		correctAns.setVisible(false);
-		
+
 		incorrectAns = new JLabel("");
 		incorrectAns.setBounds(100, 125, 173, 125);
 		centerPanel.add(incorrectAns);
@@ -338,7 +351,7 @@ public class GameGUI extends JFrame {
 		drawArea.setBackground(Color.WHITE);
 		drawArea.setBounds(20, 18, 336, 336);
 		centerPanel.add(drawArea);
-		
+
 		JPanel deleteButtonPanel = new JPanel();
 		deleteButtonPanel.setLayout(null);
 		deleteButtonPanel.setBackground(new Color(0, 80, 115));
@@ -349,7 +362,7 @@ public class GameGUI extends JFrame {
 		lblDelete.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				//DELETE DOODLE
+				// DELETE DOODLE
 				drawArea.clear();
 			}
 		});
@@ -364,7 +377,7 @@ public class GameGUI extends JFrame {
 		checkButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				//PRINT DOODLE
+				// PRINT DOODLE
 				drawArea.print();
 			}
 		});
@@ -380,7 +393,7 @@ public class GameGUI extends JFrame {
 		lblCheck.setBounds(0, 0, 90, 28);
 		checkButtonPanel.add(lblCheck);
 
-		//add Right Panel
+		// add Right Panel
 		JPanel rightPanel = new JPanel();
 		rightPanel.setBackground(new Color(0, 80, 115));
 		rightPanel.setBounds(437, 0, 243, 430);
@@ -476,11 +489,11 @@ public class GameGUI extends JFrame {
 		pattern.setHorizontalAlignment(SwingConstants.CENTER);
 		pattern.setBounds(29, 215, 195, 190);
 		rightPanel.add(pattern);
-		
+
 	}
 
 	public void ResultPanel() {
-		//add Panel
+		// add Panel
 		JPanel resultPanel = new JPanel();
 		resultPanel.setBounds(0, 0, 680, 430);
 		resultPanel.setBackground(Color.BLACK);
@@ -488,17 +501,17 @@ public class GameGUI extends JFrame {
 		resultPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(resultPanel);
 		resultPanel.setLayout(null);
-		
-		//add Top Panel
+
+		// add Top Panel
 		resultPanel.add(TopPanel());
-		
-		//add Main Panel
+
+		// add Main Panel
 		JPanel mainPanel = new JPanel();
 		mainPanel.setBackground(new Color(0, 80, 115));
 		mainPanel.setBounds(0, 30, 680, 430);
 		mainPanel.setLayout(null);
 		resultPanel.add(mainPanel);
-		
+
 		JLabel lblTextScore = new JLabel("YOUR SCORE");
 		lblTextScore.setForeground(Color.WHITE);
 		lblTextScore.setHorizontalAlignment(SwingConstants.CENTER);
@@ -512,8 +525,8 @@ public class GameGUI extends JFrame {
 		lblScore.setFont(new Font("Tw Cen MT", Font.BOLD, 50));
 		lblScore.setBounds(224, 177, 232, 68);
 		mainPanel.add(lblScore);
-		
-		//tombol back to menu
+
+		// tombol back to menu
 		JPanel menuButtonPanel = new JPanel();
 		menuButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
@@ -525,7 +538,7 @@ public class GameGUI extends JFrame {
 		mainPanel.add(menuButtonPanel);
 		menuButtonPanel.setLayout(null);
 		menuButtonPanel.setBackground(new Color(111, 190, 75));
-		
+
 		JLabel lblMenu = new JLabel("Menu");
 		lblMenu.setBounds(0, 0, 90, 28);
 		menuButtonPanel.add(lblMenu);
@@ -533,8 +546,7 @@ public class GameGUI extends JFrame {
 		lblMenu.setForeground(Color.WHITE);
 		lblMenu.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 
-		
-		//tombol play again
+		// tombol play again
 		JPanel playAgainButtonPanel = new JPanel();
 		playAgainButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
@@ -547,7 +559,7 @@ public class GameGUI extends JFrame {
 		mainPanel.add(playAgainButtonPanel);
 		playAgainButtonPanel.setLayout(null);
 		playAgainButtonPanel.setBackground(new Color(111, 190, 75));
-		
+
 		JLabel lblPlayAgain = new JLabel("Play Again");
 		lblPlayAgain.setBounds(0, 0, 90, 28);
 		playAgainButtonPanel.add(lblPlayAgain);
@@ -563,30 +575,31 @@ public class GameGUI extends JFrame {
 		frame2.setBounds(0, 0, 348, 503);
 		frame2.setVisible(true);
 		frame2.setLocationRelativeTo(null);
-	    
+
 		JPanel contentPane = new JPanel();
 		contentPane.setBounds(0, 0, 348, 503);
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		contentPane.setBackground(new Color(0, 80, 115));
 		contentPane.setLayout(null);
 		frame2.setContentPane(contentPane);
-		
-		//add Top Panel
+
+		// add Top Panel
 		JPanel topPanel = new JPanel();
 		contentPane.add(topPanel);
 		topPanel.addMouseMotionListener(new MouseMotionAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
 				Point currCoords = e.getLocationOnScreen();
-                frame2.setLocation(currCoords.x - compCoords2.x, currCoords.y - compCoords2.y);
+				frame2.setLocation(currCoords.x - compCoords2.x, currCoords.y - compCoords2.y);
 			}
 		});
-		
+
 		topPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
 				compCoords2 = e.getPoint();
 			}
+
 			@Override
 			public void mouseReleased(MouseEvent e) {
 				compCoords2 = null;
@@ -595,7 +608,7 @@ public class GameGUI extends JFrame {
 		topPanel.setBackground(new Color(0, 80, 115));
 		topPanel.setBounds(0, 0, 348, 31);
 		topPanel.setLayout(null);
-		
+
 		JLabel exitWindowButton = new JLabel("");
 		exitWindowButton.setBounds(308, 0, 40, 30);
 		topPanel.add(exitWindowButton);
@@ -607,35 +620,33 @@ public class GameGUI extends JFrame {
 		});
 		exitWindowButton.setIcon(new ImageIcon("./img/closeWindowButton.png"));
 		exitWindowButton.setHorizontalAlignment(SwingConstants.CENTER);
-		
 
 		JPanel main = new JPanel();
 		main.setBounds(0, 30, 348, 473);
 		main.setBorder(new EmptyBorder(5, 5, 5, 5));
 		main.setLayout(null);
 		contentPane.add(main);
-		
+
 		JLabel image = new JLabel("");
 		image.setIcon(new ImageIcon("./img/HowTo.png"));
 		image.setBounds(0, 0, 348, 473);
 		image.setHorizontalAlignment(SwingConstants.CENTER);
 		main.add(image);
 	}
-	
-	
+
 	private Integer[] prepareLevel() {
-		Set<Integer> levels = new HashSet<>();
-		while(levels.size() <= 5) {
-			levels.add((int) (Math.random() * (doodles.size() - 1)));
+		Set<Integer> levels = new LinkedHashSet<>();
+		Random rand = new Random((long) (Math.random() * System.nanoTime()));
+		while (levels.size() <= 5) {
+			levels.add(rand.nextInt(doodles.size() - 1));
 		}
 		return levels.stream().toArray(Integer[]::new);
 	}
-	
+
 	public void play() {
 		Integer[] levels = prepareLevel();
-		finished = false;
 		score = 0;
-		level = new Thread(new Runnable() {
+		levelThread = new Thread(new Runnable() {
 			@Override
 			public void run() {
 				final double frameTime = 1.0 / 60.0;
@@ -643,15 +654,14 @@ public class GameGUI extends JFrame {
 				boolean correct = false;
 				int MAX_TIME = 19;
 				int timer = -1;
-				
+
 				long lastTime = System.nanoTime();
 				double unprocessedTime = 0;
 				for (int i = 0; i < 5; i++) {
 					currentLevel.setText(String.valueOf(i + 1));
-					currentTarget.setText(doodles.get(levels[i]));
-		//			System.out.println(i);
-					time:
-					while (timer <= MAX_TIME) {
+					currentTarget.setText(doodles.get(levels[i]).toUpperCase());
+					// System.out.println(i);
+					time: while (timer <= MAX_TIME) {
 						boolean update = false;
 						long startTime = System.nanoTime();
 						long passedTime = startTime - lastTime;
@@ -667,8 +677,8 @@ public class GameGUI extends JFrame {
 							}
 							if (update) {
 								int labelPredict = drawArea.currentPredict;
-								currentPredict.setText(doodles.get(labelPredict));
-								if(labelPredict == levels[i]) {
+								currentPredict.setText(doodles.get(labelPredict).toUpperCase());
+								if (labelPredict == levels[i]) {
 									try {
 										correctAns.setVisible(true);
 										Thread.sleep(1000);
@@ -678,7 +688,7 @@ public class GameGUI extends JFrame {
 									}
 									correctAns.setVisible(false);
 									correct = true;
-									score += 20;
+									score += 10;
 									break time;
 								}
 							} else {
@@ -691,7 +701,7 @@ public class GameGUI extends JFrame {
 						}
 					}
 					drawArea.clear();
-					if(!correct) {
+					if (!correct) {
 						try {
 							incorrectAns.setVisible(true);
 							Thread.sleep(1000);
@@ -705,9 +715,9 @@ public class GameGUI extends JFrame {
 				}
 				ResultPanel();
 			}
-			
+
 		});
-		level.start();
-//		System.out.println(finished);
+		levelThread.start();
+		// System.out.println(finished);
 	}
 }

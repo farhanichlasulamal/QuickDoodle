@@ -37,7 +37,7 @@ public class GameGUI extends JFrame {
 	private static HashMap<Integer, String> doodles = new HashMap<>();
 
 	private void prepareDoodles() {
-		doodles.put(-1, "None");
+		doodles.put(-1, "none");
 		doodles.put(0, "bus");
 		doodles.put(1, "cat");
 		doodles.put(2, "carrot");
@@ -172,6 +172,19 @@ public class GameGUI extends JFrame {
 				// mouse click check button
 			}
 		});
+		
+		JPanel updateButtonPanel = new JPanel();
+		updateButtonPanel.setLayout(null);
+		updateButtonPanel.setBackground(new Color(1, 187, 234));
+		updateButtonPanel.setBounds(48, 355, 121, 42);
+		setting.add(updateButtonPanel);
+		
+		JLabel lblUpdate = new JLabel("UPDATE");
+		lblUpdate.setBounds(0, 0, 121, 42);
+		updateButtonPanel.add(lblUpdate);
+		lblUpdate.setHorizontalAlignment(SwingConstants.CENTER);
+		lblUpdate.setForeground(Color.WHITE);
+		lblUpdate.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		saveButtonPanel.setBackground(new Color(111, 190, 75));
 		saveButtonPanel.setBounds(31, 162, 90, 28);
 		setting.add(saveButtonPanel);
@@ -646,7 +659,7 @@ public class GameGUI extends JFrame {
 				double unprocessedTime = 0;
 				for (int i = 0; i < 5; i++) {
 					currentLevel.setText(String.valueOf(i + 1));
-					currentTarget.setText(doodles.get(levels[i]));
+					currentTarget.setText(doodles.get(levels[i]).toUpperCase());
 					// System.out.println(i);
 					time: while (timer <= MAX_TIME) {
 						boolean update = false;
@@ -664,7 +677,7 @@ public class GameGUI extends JFrame {
 							}
 							if (update) {
 								int labelPredict = drawArea.currentPredict;
-								currentPredict.setText(doodles.get(labelPredict));
+								currentPredict.setText(doodles.get(labelPredict).toUpperCase());
 								if (labelPredict == levels[i]) {
 									try {
 										correctAns.setVisible(true);
@@ -675,7 +688,7 @@ public class GameGUI extends JFrame {
 									}
 									correctAns.setVisible(false);
 									correct = true;
-									score += 20;
+									score += 10;
 									break time;
 								}
 							} else {

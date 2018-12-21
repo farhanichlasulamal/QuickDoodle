@@ -8,12 +8,15 @@ import java.io.Reader;
 import java.util.ArrayList;
 import java.util.List;
 
+// import com.mysql.jdbc.Connection;
+
 public class Batch {
 	private List<Doodle> doodles;
 	private int capacity;
 	private int classSize;
 	private String labelName;
-
+	String path = "jdbc:mysql://localhost:3306/quickdoodle?&useSSL=false";
+	
 	public Batch(String object, int capacity, int classSize) {
 		doodles = new ArrayList<>();
 		this.capacity = capacity;
@@ -22,6 +25,7 @@ public class Batch {
 	}
 
 	private void readFile(String filename) {
+//		Connection connection = Execute.setConnection(path);
 		InputStream ins = null;
 		Reader r = null;
 		BufferedReader br = null;
@@ -29,12 +33,20 @@ public class Batch {
 		labelName = doodleData[1];
 		try {
 			String pixelValues;
-			ins = new FileInputStream("D:/My Java/Neural Net/Database Dummy/" + filename + ".csv");
+			ins = new FileInputStream(".Database Dummy/" + filename + ".csv");
 			r = new InputStreamReader(ins);
 			br = new BufferedReader(r);
 			while ((pixelValues = br.readLine()) != null && doodles.size() < capacity) {
 				doodles.add(new Doodle(Integer.valueOf(doodleData[0]), labelName, classSize, pixelValues));
 			}
+//			
+			
+//			while ((pixelValues = br.readLine()) != null && doodles.size() < capacity) {
+//				doodles.add(new Doodle(Integer.valueOf(doodleData[0]), labelName, classSize, pixelValues));
+//				Execute.executeOutPutQuery("select * from pixel_value where LabelID = Label_ID", path, 1);
+//			}
+//			
+			
 		} catch (Exception e) {
 			System.err.println(e.getMessage());
 		} finally {

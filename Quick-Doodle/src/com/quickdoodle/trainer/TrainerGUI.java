@@ -12,6 +12,7 @@ import java.util.LinkedHashMap;
 import javax.swing.ImageIcon;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
@@ -226,41 +227,58 @@ public class TrainerGUI extends JFrame {
 		runButtonPanel.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				String stringName = textFieldName.getText();
-				String stringSchedule = textAreaSchedule.getText();
-				String stringEpoch = textFieldEpoch.getText();
-				String stringLayer = textFieldLayer.getText();
-				String stringBatch = textFieldBatch.getText();
-				String stringRatio = textFieldRatio.getText();
-				try {
-					textAreaLog.removeAll();
-					if(trainerThread != null) {
-						trainerThread.stop();
-					}
-					LinkedHashMap<Integer, Float> schedule = parseScheduleInput(stringSchedule);
-					int[] hiddenLayers = parseLayerInput(stringLayer);
-					trainer.setMaxEpoch(Integer.parseInt(stringEpoch));
-					trainer.setSchedule(schedule);
-					trainer.initializeModel(784, hiddenLayers, objectList.length);
-					String dataSet = trainer.initializeDataset(objectList, Integer.parseInt(stringBatch), Float.parseFloat(stringRatio));
-					textAreaLog.setText(dataSet);
-					trainerThread = new Thread(new Runnable() {
+					String stringName = textFieldName.getText();
+					String stringSchedule = textAreaSchedule.getText();
+					String stringEpoch = textFieldEpoch.getText();
+					String stringLayer = textFieldLayer.getText();
+					String stringBatch = textFieldBatch.getText();
+					String stringRatio = textFieldRatio.getText();
+					
+					if(stringName.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "silakan masukkan nama!");
+					} else if (stringSchedule.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "silakan masukkan Schedule!");
+					} else if (stringEpoch.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "silakan masukkan jumlah Epoch!");
+					} else if (stringLayer.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "silakan masukkan Layer!");
+					} else if (stringBatch.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "silakan masukkan Batch!");
+					} else if (stringRatio.isEmpty()) {
+						JOptionPane.showMessageDialog(null, "silakan masukkan Rasio!");
+					} else {
+						try {
+							textAreaLog.removeAll();
+							if(trainerThread != null) {
+								trainerThread.stop();
+							}
+							LinkedHashMap<Integer, Float> schedule = parseScheduleInput(stringSchedule);
+							int[] hiddenLayers = parseLayerInput(stringLayer);
+							trainer.setMaxEpoch(Integer.parseInt(stringEpoch));
+							trainer.setSchedule(schedule);
+							trainer.initializeModel(784, hiddenLayers, objectList.length);
+							String dataSet = trainer.initializeDataset(objectList, Integer.parseInt(stringBatch), Float.parseFloat(stringRatio));
+							textAreaLog.setText(dataSet);
+							trainerThread = new Thread(new Runnable() {
 
-						@Override
-						public void run() {
-							trainer.train(textAreaLog);							
+								@Override
+								public void run() {
+									trainer.train(textAreaLog);							
+								}
+								
+							});
+							trainerThread.start();
+							String result = trainer.exportModel();
+							//Kirim kedata base
+							DataUtils.saveText("./" +stringName + ".csv", result);
+						} catch (NumberFormatException a) {
+							JOptionPane.showMessageDialog(null, "Epoch dan Batch harus berupa angka!");
+						} catch (Exception ex) {
+							ex.printStackTrace();
 						}
-						
-					});
-					trainerThread.start();
-					String result = trainer.exportModel();
-					//Kirim kedata base
-					DataUtils.saveText("./" +stringName + ".csv", result);
-				} catch (Exception ex) {
-					ex.printStackTrace();
-				}				
-			}
-		});
+					}					
+				}
+			});
 		runButtonPanel.setBackground(new Color(111, 190, 75));
 		runButtonPanel.setBounds(295, 216, 90, 28);
 		buttomPanel.add(runButtonPanel);
@@ -272,6 +290,19 @@ public class TrainerGUI extends JFrame {
 		lblRun.setForeground(Color.WHITE);
 		lblRun.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
 		lblRun.setHorizontalAlignment(SwingConstants.CENTER);
+		
+		JPanel shareButtonPanel = new JPanel();
+		shareButtonPanel.setBounds(545, 216, 90, 28);
+		buttomPanel.add(shareButtonPanel);
+		shareButtonPanel.setLayout(null);
+		shareButtonPanel.setBackground(Color.RED);
+		
+		JLabel lblShare = new JLabel("Share");
+		lblShare.setHorizontalAlignment(SwingConstants.CENTER);
+		lblShare.setForeground(Color.WHITE);
+		lblShare.setFont(new Font("Tw Cen MT", Font.BOLD, 16));
+		lblShare.setBounds(0, 0, 90, 28);
+		shareButtonPanel.add(lblShare);
 		
 		textAreaLog = new JTextArea();
 		textAreaLog.setForeground(Color.WHITE);

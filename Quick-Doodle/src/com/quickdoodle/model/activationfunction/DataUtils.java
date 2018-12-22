@@ -47,10 +47,10 @@ public class DataUtils {
 		}
 	}
 	
-	public static void main(String[] args) {
-		String name = "zigzag";
-		String text = npyToOneHotVector("D:\\My Data Set\\Google Quick Draw\\npy\\" +name +".npy");
-		saveText("./"+name+".csv", text);
-	}
-	
+//	public static void main(String[] args) {
+//		String name = "zigzag";
+//		String text = npyToOneHotVector("D:\\My Data Set\\Google Quick Draw\\npy\\" +name +".npy");
+//		saveText("./"+name+".csv", text);
+//	}
+//	
 }

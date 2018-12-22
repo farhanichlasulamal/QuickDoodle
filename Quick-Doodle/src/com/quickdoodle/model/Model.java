@@ -45,7 +45,7 @@ public class Model {
 	private String loadData() {
 		StringBuilder data = new StringBuilder();
 		try {
-			File file = new File("./data/model.csv");
+			File file = new File("./data/local/model.csv");
 			FileReader fr = new FileReader(file);
 			BufferedReader br = new BufferedReader(fr);
 			String line = null;

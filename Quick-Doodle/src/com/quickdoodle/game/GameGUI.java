@@ -6,6 +6,7 @@ import java.awt.Point;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.LinkedHashSet;
 import java.util.Random;
@@ -19,6 +20,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
+
+import com.quickdoodle.trainer.datahandler.DBHandler;
 
 public class GameGUI extends JFrame {
 	static Point compCoords;
@@ -36,18 +39,28 @@ public class GameGUI extends JFrame {
 
 	private static HashMap<Integer, String> doodles = new HashMap<>();
 
-	private void prepareDoodles() {
-		doodles.put(-1, "none");
-		doodles.put(0, "bus");
-		doodles.put(1, "cat");
-		doodles.put(2, "carrot");
-		doodles.put(3, "diamond");
-		doodles.put(4, "fish");
-		doodles.put(5, "flower");
+	private void prepareDoodles() throws IOException {
+		String[] objects;
+		try {
+			objects = DBHandler.loadObjects("./data/local/obj_list.txt");
+		} catch (IOException e) {
+			DBHandler.downloadFileEnd("obj_list.txt");
+			objects = DBHandler.loadObjects("./data/local/obj_list.txt");
+		}
+		for(String obj : objects) {
+			String[] data = obj.split(" ");
+			int key = Integer.parseInt(data[0]);
+			String val = data[1];
+			doodles.put(key, val);
+		}
 	}
 
 	public GameGUI() {
-		prepareDoodles();
+		try {
+			prepareDoodles();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 		addFrame();
 		StartMenu();
 		// ResultPanel();

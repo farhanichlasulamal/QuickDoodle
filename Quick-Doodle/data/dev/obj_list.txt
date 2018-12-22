@@ -1,0 +1,6 @@
+0 bus
+1 cat
+2 carrot
+3 diamond
+4 fish
+5 flower

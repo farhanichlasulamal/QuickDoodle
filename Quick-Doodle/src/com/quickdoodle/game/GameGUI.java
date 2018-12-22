@@ -202,6 +202,20 @@ public class GameGUI extends JFrame {
 		saveButtonPanel.setBounds(31, 162, 90, 28);
 		setting.add(saveButtonPanel);
 		saveButtonPanel.setLayout(null);
+		
+		updateButtonPanel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent arg0) {
+				try {
+					DBHandler.downloadFileEnd("model.csv");
+					DBHandler.downloadFileEnd("obj_list.txt");
+					prepareDoodles();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+			}
+		});
+		
 
 		JLabel lblSave = new JLabel("Save");
 		lblSave.setBounds(0, 0, 90, 28);

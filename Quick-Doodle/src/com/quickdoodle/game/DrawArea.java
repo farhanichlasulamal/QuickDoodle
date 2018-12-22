@@ -10,10 +10,12 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
 import java.awt.image.BufferedImage;
+import java.io.IOException;
 
 import javax.swing.JComponent;
 
 import com.quickdoodle.model.Model;
+import com.quickdoodle.trainer.datahandler.DBHandler;
 
 public class DrawArea extends JComponent {
 

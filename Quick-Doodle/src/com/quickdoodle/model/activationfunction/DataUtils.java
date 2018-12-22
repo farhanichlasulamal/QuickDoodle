@@ -33,19 +33,7 @@ public class DataUtils {
 		}
 		return buffer.toString();
 	}
-	
-	static public void saveText(String path, String text) {
-		try {
-			File file = new File(path);
-			file.getParentFile().mkdirs();
-			file.createNewFile();
-			PrintWriter writer = new PrintWriter(new FileOutputStream(file, true));
-			writer.print(text);
-			writer.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-	}
+
 	
 //	public static void main(String[] args) {
 //		String name = "zigzag";

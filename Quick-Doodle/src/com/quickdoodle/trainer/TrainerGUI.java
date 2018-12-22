@@ -279,7 +279,7 @@ public class TrainerGUI extends JFrame {
 						trainerThread.start();
 						String result = trainer.exportModel();
 						// Kirim kedata base
-						DataUtils.saveText("./" + stringName + ".csv", result);
+						DBHandler.saveModel(stringName, result);
 					} catch (NumberFormatException a) {
 						JOptionPane.showMessageDialog(null, "Epoch dan Batch harus berupa angka!");
 					} catch (Exception ex) {

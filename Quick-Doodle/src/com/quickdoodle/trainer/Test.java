@@ -33,7 +33,7 @@ public class Test {
 		trainer.train(null);
 		
 		//Run dan save input nama
-		DataUtils.saveText("./model4"
+		/*DataUtils.saveText("./model4"
 				+ ""
 				+ ".csv", trainer.exportModel());
 		/*Dataset dataset = new Dataset(objectList, 10, 0.8f);

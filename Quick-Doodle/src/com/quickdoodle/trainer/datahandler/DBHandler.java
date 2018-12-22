@@ -1,7 +1,9 @@
 package com.quickdoodle.trainer.datahandler;
 
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintWriter;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.util.List;
@@ -105,4 +107,19 @@ public class DBHandler {
 		File dst = new File(dbRoot + fileName);
 	    Files.copy(src.toPath(), dst.toPath());
 	}
+	
+	
+	public static void saveModel(String fileName, String text) {
+		try {
+			File file = new File("./data/db/"+fileName +".csv");
+			file.getParentFile().mkdirs();
+			file.createNewFile();
+			PrintWriter writer = new PrintWriter(new FileOutputStream(file, true));
+			writer.print(text);
+			writer.close();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+
 }
